@@ -1,3 +1,6 @@
+@import url("fontawesome-all.min.css");
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,300italic");
+@import url("https://fonts.googleapis.com/css?family=Chicle");
 * {
     margin: 0;
     padding: 0;
@@ -34,8 +37,9 @@ body {
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 3rem;
     font-weight: bold;
+    font-family: 'Chicle';
 }
 
 .logo a {
