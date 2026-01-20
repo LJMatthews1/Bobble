@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HobbyHub - Discover Your Next Hobby</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo">🎯 HobbyHub</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link active" data-page="home">Home</a>
+                <a href="#" class="nav-link" data-page="browse">Browse</a>
+                <a href="#" class="nav-link" data-page="my-bookings">My Bookings</a>
+                <a href="#" class="nav-link" data-page="about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        
+        <!-- HOME PAGE -->
+        <section id="home-page" class="page active">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Discover Your Next Hobby</h1>
+                    <p>Explore thousands of activities, classes, and experiences</p>
+                    <div class="hero-search">
+                        <input type="text" id="hero-search" placeholder="Search hobbies, classes, or activities...">
+                        <button id="hero-search-btn" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Categories -->
+            <div class="container">
+                <section class="featured-section">
+                    <h2>Popular Categories</h2>
+                    <div class="category-grid">
+                        <div class="category-card" data-category="Arts & Crafts">
+                            <span class="category-icon">🎨</span>
+                            <span class="category-name">Arts & Crafts</span>
+                        </div>
+                        <div class="category-card" data-category="Fitness">
+                            <span class="category-icon">💪</span>
+                            <span class="category-name">Fitness</span>
+                        </div>
+                        <div class="category-card" data-category="Music">
+                            <span class="category-icon">🎵</span>
+                            <span class="category-name">Music</span>
+                        </div>
+                        <div class="category-card" data-category="Cooking">
+                            <span class="category-icon">👨‍🍳</span>
+                            <span class="category-name">Cooking</span>
+                        </div>
+                        <div class="category-card" data-category="Technology">
+                            <span class="category-icon">💻</span>
+                            <span class="category-name">Technology</span>
+                        </div>
+                        <div class="category-card" data-category="Sports">
+                            <span class="category-icon">⚽</span>
+                            <span class="category-name">Sports</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Featured Hobbies -->
+                <section class="featured-section">
+                    <h2>Featured This Week</h2>
+                    <div id="featured-hobbies" class="hobby-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- BROWSE PAGE -->
+        <section id="browse-page" class="page">
+            <div class="container">
+                <h1>Browse All Hobbies</h1>
+                
+                <div class="browse-layout">
+                    <!-- Sidebar Filters -->
+                    <aside class="filters-sidebar">
+                        <div class="filter-section">
+                            <h3>Filters</h3>
+                            
+                            <div class="filter-group">
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" value="all" checked>
+                                    <span>All Categories</span>
+                                </label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>Category</h4>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Arts & Crafts">
+                                    <span>Arts & Crafts</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Fitness">
+                                    <span>Fitness</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Music">
+                                    <span>Music</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Cooking">
+                                    <span>Cooking</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Technology">
+                                    <span>Technology</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="category" value="Sports">
+                                    <span>Sports</span>
+                                </label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>Price Range</h4>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="price" value="0-25">
+                                    <span>$0 - $25</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="price" value="25-50">
+                                    <span>$25 - $50</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="price" value="50-100">
+                                    <span>$50 - $100</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="price" value="100+">
+                                    <span>$100+</span>
+                                </label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>Difficulty Level</h4>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="difficulty" value="Beginner">
+                                    <span>Beginner</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="difficulty" value="Intermediate">
+                                    <span>Intermediate</span>
+                                </label>
+                                <label class="filter-label">
+                                    <input type="checkbox" class="filter-checkbox" data-filter="difficulty" value="Advanced">
+                                    <span>Advanced</span>
+                                </label>
+                            </div>
+
+                            <button id="clear-filters-btn" class="btn btn-secondary">Clear Filters</button>
+                        </div>
+                    </aside>
+
+                    <!-- Main Content -->
+                    <section class="browse-content">
+                        <div class="search-bar">
+                            <input type="text" id="browse-search" placeholder="Search hobbies...">
+                            <select id="sort-dropdown">
+                                <option value="popular">Most Popular</option>
+                                <option value="newest">Newest</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Highest Rated</option>
+                            </select>
+                        </div>
+
+                        <div id="browse-hobbies" class="hobby-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOBBY DETAIL PAGE -->
+        <section id="detail-page" class="page">
+            <div class="container">
+                <button id="back-btn" class="btn btn-link">← Back</button>
+                
+                <div class="detail-layout">
+                    <div class="detail-image">
+                        <div id="detail-image-placeholder" class="image-placeholder"></div>
+                    </div>
+
+                    <div class="detail-content">
+                        <h1 id="detail-title"></h1>
+                        <div class="detail-meta">
+                            <span class="rating" id="detail-rating"></span>
+                            <span class="reviews" id="detail-reviews"></span>
+                            <span class="difficulty" id="detail-difficulty"></span>
+                        </div>
+
+                        <div class="detail-price">
+                            <span class="price-label">Price per session:</span>
+                            <span class="price-value" id="detail-price"></span>
+                        </div>
+
+                        <p id="detail-description" class="detail-description"></p>
+
+                        <div class="detail-info">
+                            <div class="info-item">
+                                <span class="info-label">Instructor:</span>
+                                <span id="detail-instructor"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Duration:</span>
+                                <span id="detail-duration"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Category:</span>
+                                <span id="detail-category"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Students Enrolled:</span>
+                                <span id="detail-enrolled"></span>
+                            </div>
+                        </div>
+
+                        <div class="detail-schedule">
+                            <h3>Upcoming Sessions</h3>
+                            <ul id="detail-schedule" class="schedule-list">
+                                <!-- Populated by JavaScript -->
+                            </ul>
+                        </div>
+
+                        <div class="detail-actions">
+                            <button id="book-btn" class="btn btn-primary btn-large">Book Now</button>
+                            <button id="wishlist-btn" class="btn btn-secondary btn-large">♥ Add to Wishlist</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <section class="reviews-section">
+                    <h2>Reviews</h2>
+                    <div id="detail-reviews-list" class="reviews-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- MY BOOKINGS PAGE -->
+        <section id="my-bookings-page" class="page">
+            <div class="container">
+                <h1>My Bookings</h1>
+                
+                <div class="bookings-tabs">
+                    <button class="booking-tab active" data-tab="upcoming">Upcoming</button>
+                    <button class="booking-tab" data-tab="completed">Completed</button>
+                    <button class="booking-tab" data-tab="wishlist">Wishlist</button>
+                </div>
+
+                <div id="upcoming-bookings" class="bookings-content active">
+                    <div id="upcoming-list" class="bookings-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="completed-bookings" class="bookings-content">
+                    <div id="completed-list" class="bookings-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="wishlist-bookings" class="bookings-content">
+                    <div id="wishlist-list" class="bookings-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE -->
+        <section id="about-page" class="page">
+            <div class="container">
+                <h1>About HobbyHub</h1>
+                
+                <section class="about-section">
+                    <h2>What is HobbyHub?</h2>
+                    <p>HobbyHub is your gateway to discovering and exploring hobbies, classes, and experiences. Whether you're looking to learn a new skill, stay fit, explore creative pursuits, or connect with others who share your interests, HobbyHub brings together instructors, venues, and enthusiasts in one place.</p>
+                </section>
+
+                <section class="about-section">
+                    <h2>Our Mission</h2>
+                    <p>We believe everyone deserves the opportunity to explore their passions and discover new ones. Our mission is to make it easy to find, book, and enjoy hobbies and classes that enrich your life.</p>
+                </section>
+
+                <section class="about-section">
+                    <h2>Why Choose HobbyHub?</h2>
+                    <ul>
+                        <li>🎯 Curated selection of hobbies and activities</li>
+                        <li>💡 Detailed descriptions and instructor bios</li>
+                        <li>⭐ Real reviews from community members</li>
+                        <li>🔍 Advanced search and filtering</li>
+                        <li>💾 Wishlist and booking management</li>
+                        <li>🌍 Diverse categories for all interests</li>
+                    </ul>
+                </section>
+
+                <section class="about-section">
+                    <h2>Get Started</h2>
+                    <p>Browse our extensive catalog, discover activities that match your interests, and start your hobby journey today!</p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Confirm Booking</h2>
+            <div id="modal-details">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="modal-actions">
+                <button id="confirm-booking-btn" class="btn btn-primary">Confirm Booking</button>
+                <button id="cancel-booking-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-message" class="notification">
+        <span id="notification-text"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
