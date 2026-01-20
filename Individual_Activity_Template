@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Details - Bobble</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .back-button {
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .activity-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 120px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .activity-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .activity-info {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .activity-details h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .activity-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 18px;
+        }
+
+        .rating-count {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .activity-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .activity-details-list {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .details-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .sidebar {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .price-box {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .instructor-info {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .instructor-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .instructor-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .instructor-details p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .booking-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 12px;
+        }
+
+        .booking-button:hover {
+            background-color: #333;
+        }
+
+        .wishlist-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #f0f0f0;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .wishlist-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .reviews-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .reviews-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .review-author {
+            font-weight: 600;
+        }
+
+        .review-rating {
+            color: #ffc107;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .review-text {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .no-activity {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-activity-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .activity-info {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-hero {
+                height: 250px;
+            }
+
+            .activity-details h1 {
+                font-size: 24px;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .activity-meta {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="Main.html" class="logo">Bobble</a>
+            <a href="Search_Page" class="back-button">← Back to Search</a>
+        </div>
+    </header>
+
+    <main id="mainContent">
+        <!-- Activity content will be populated by JavaScript -->
+    </main>
+
+    <script>
+        // Activity data (same as in Search_Page)
+        const activities = [
+            {
+                id: 1,
+                name: "Yoga Flow",
+                category: "Yoga",
+                difficulty: "Beginner",
+                location: "Downtown Studio",
+                rating: 4.8,
+                reviews: 324,
+                price: 25,
+                image: "🧘",
+                description: "Flow through sequences of poses in this energetic yoga class. Perfect for building flexibility, strength, and mental clarity.",
+                instructor: "Sarah Johnson",
+                instructorTitle: "Certified Yoga Instructor",
+                duration: 60,
+                capacity: 20,
+                schedule: "Mon, Wed, Fri at 7:00 PM",
+                difficulty_level: "Beginner",
+                benefits: ["Improved Flexibility", "Stress Relief", "Better Balance"],
+                reviews_data: [
+                    { author: "Maria", rating: 5, date: "2 weeks ago", text: "Wonderful class! Sarah is an amazing instructor." },
+                    { author: "John", rating: 4, date: "3 weeks ago", text: "Great session. Perfect for beginners." }
+                ]
+            },
+            {
+                id: 2,
+                name: "HIIT Training",
+                category: "Cardio",
+                difficulty: "Advanced",
+                location: "Fitness Center North",
+                rating: 4.9,
+                reviews: 512,
+                price: 35,
+                image: "💪",
+                description: "High-intensity interval training to boost your cardiovascular fitness. Combines short bursts of intense exercise with recovery periods.",
+                instructor: "Mike Thompson",
+                instructorTitle: "Certified Personal Trainer",
+                duration: 45,
+                capacity: 15,
+                schedule: "Tue, Thu, Sat at 6:30 AM",
+                difficulty_level: "Advanced",
+                benefits: ["Increased Endurance", "Rapid Calorie Burn", "Improved Metabolism"],
+                reviews_data: [
+                    { author: "Alex", rating: 5, date: "1 week ago", text: "The most intense workout I've done! Highly recommended." },
+                    { author: "Emma", rating: 5, date: "2 weeks ago", text: "Best cardio class ever. Mike pushes you to your limits." }
+                ]
+            },
+            {
+                id: 3,
+                name: "Pilates Core",
+                category: "Strength",
+                difficulty: "Intermediate",
+                location: "West Side Studio",
+                rating: 4.7,
+                reviews: 287,
+                price: 28,
+                image: "🤸",
+                description: "Strengthen your core with our targeted pilates program. Focus on controlled movements to build deep core strength.",
+                instructor: "Emma Davis",
+                instructorTitle: "Pilates Specialist",
+                duration: 50,
+                capacity: 12,
+                schedule: "Mon, Wed, Fri at 10:00 AM",
+                difficulty_level: "Intermediate",
+                benefits: ["Core Strength", "Better Posture", "Improved Flexibility"],
+                reviews_data: [
+                    { author: "Lisa", rating: 5, date: "4 days ago", text: "Emma is so knowledgeable and supportive." },
+                    { author: "Tom", rating: 4, date: "1 week ago", text: "Tough but rewarding. Feel much stronger!" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Spin Class",
+                category: "Cardio",
+                difficulty: "Intermediate",
+                location: "Downtown Studio",
+                rating: 4.8,
+                reviews: 451,
+                price: 32,
+                image: "🚴",
+                description: "High-energy indoor cycling with motivating music and instructors. Push your limits while having fun with community.",
+                instructor: "Alex Martinez",
+                instructorTitle: "Spin Class Champion",
+                duration: 45,
+                capacity: 25,
+                schedule: "Daily at 6:00 PM",
+                difficulty_level: "Intermediate",
+                benefits: ["Cardio Fitness", "Low Impact", "Community Fun"],
+                reviews_data: [
+                    { author: "Rachel", rating: 5, date: "3 days ago", text: "Alex's energy is contagious! Best class ever." },
+                    { author: "Chris", rating: 5, date: "1 week ago", text: "Amazing workout and atmosphere." }
+                ]
+            },
+            {
+                id: 5,
+                name: "Boxing Basics",
+                category: "Strength",
+                difficulty: "Beginner",
+                location: "Combat Sports Center",
+                rating: 4.6,
+                reviews: 198,
+                price: 30,
+                image: "🥊",
+                description: "Learn boxing fundamentals in a fun and supportive environment. No prior experience needed.",
+                instructor: "David Lee",
+                instructorTitle: "Professional Boxing Coach",
+                duration: 60,
+                capacity: 10,
+                schedule: "Tue, Thu, Sat at 5:00 PM",
+                difficulty_level: "Beginner",
+                benefits: ["Self Defense", "Upper Body Strength", "Confidence Building"],
+                reviews_data: [
+                    { author: "Michael", rating: 5, date: "2 weeks ago", text: "David is patient and encouraging. Great for beginners!" },
+                    { author: "Sarah", rating: 4, date: "3 weeks ago", text: "Fun workout with useful skills." }
+                ]
+            },
+            {
+                id: 6,
+                name: "Dance Cardio",
+                category: "Cardio",
+                difficulty: "Beginner",
+                location: "Downtown Studio",
+                rating: 4.9,
+                reviews: 634,
+                price: 24,
+                image: "💃",
+                description: "Get fit while having fun dancing to contemporary music. No dance experience required!",
+                instructor: "Lisa Chen",
+                instructorTitle: "Professional Dancer & Fitness Coach",
+                duration: 55,
+                capacity: 30,
+                schedule: "Mon, Wed, Fri, Sun at 6:00 PM",
+                difficulty_level: "Beginner",
+                benefits: ["Cardio Fitness", "Coordination", "Confidence & Fun"],
+                reviews_data: [
+                    { author: "Jessica", rating: 5, date: "5 days ago", text: "Lisa makes fitness so much fun! Can't get enough." },
+                    { author: "Mark", rating: 5, date: "1 week ago", text: "Doesn't feel like exercise at all. Best class ever!" }
+                ]
+            },
+            {
+                id: 7,
+                name: "Strength Training",
+                category: "Strength",
+                difficulty: "Advanced",
+                location: "Fitness Center North",
+                rating: 4.7,
+                reviews: 423,
+                price: 38,
+                image: "🏋️",
+                description: "Comprehensive strength training to build muscle and power. Progressive program for serious results.",
+                instructor: "James Wilson",
+                instructorTitle: "Strength & Conditioning Coach",
+                duration: 60,
+                capacity: 12,
+                schedule: "Mon, Wed, Fri at 6:00 AM",
+                difficulty_level: "Advanced",
+                benefits: ["Muscle Building", "Increased Strength", "Improved Performance"],
+                reviews_data: [
+                    { author: "Robert", rating: 5, date: "1 week ago", text: "James pushes you hard but in a good way. Seeing great gains!" },
+                    { author: "Patrick", rating: 5, date: "2 weeks ago", text: "Best strength coach around. Highly recommend!" }
+                ]
+            },
+            {
+                id: 8,
+                name: "Meditation & Mindfulness",
+                category: "Wellness",
+                difficulty: "Beginner",
+                location: "Zen Wellness Studio",
+                rating: 4.9,
+                reviews: 289,
+                price: 18,
+                image: "🧠",
+                description: "Reduce stress and improve mental clarity through guided meditation. A journey to inner peace and balance.",
+                instructor: "Monica Patel",
+                instructorTitle: "Meditation & Wellness Expert",
+                duration: 30,
+                capacity: 20,
+                schedule: "Daily at 7:00 AM & 5:00 PM",
+                difficulty_level: "Beginner",
+                benefits: ["Stress Reduction", "Mental Clarity", "Better Sleep"],
+                reviews_data: [
+                    { author: "Sophia", rating: 5, date: "4 days ago", text: "Monica's voice is so calming. Life changing experience." },
+                    { author: "Daniel", rating: 5, date: "1 week ago", text: "Perfect way to start my day. Highly recommended!" }
+                ]
+            }
+        ];
+
+        function getActivityFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return parseInt(params.get('id')) || null;
+        }
+
+        function renderActivity(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            const mainContent = document.getElementById('mainContent');
+
+            if (!activity) {
+                mainContent.innerHTML = `
+                    <div class="no-activity">
+                        <div class="no-activity-icon">😕</div>
+                        <h2>Activity Not Found</h2>
+                        <p>The activity you're looking for doesn't exist.</p>
+                        <a href="Search_Page" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #000; color: #fff; text-decoration: none; border-radius: 6px;">
+                            Back to Search
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            mainContent.innerHTML = `
+                <div class="activity-hero">${activity.image}</div>
+
+                <div class="activity-info">
+                    <div class="activity-details">
+                        <h1>${activity.name}</h1>
+                        <div class="activity-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Category</span>
+                                <span class="meta-value">${activity.category}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Difficulty</span>
+                                <span class="meta-value">${activity.difficulty}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Duration</span>
+                                <span class="meta-value">${activity.duration} min</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Location</span>
+                                <span class="meta-value">${activity.location}</span>
+                            </div>
+                            <div class="meta-item rating">
+                                <span class="rating-stars">★</span>
+                                <div>
+                                    <span class="meta-value">${activity.rating}</span>
+                                    <span class="rating-count">(${activity.reviews} reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="activity-description">${activity.description}</p>
+
+                        <div class="activity-details-list">
+                            <div class="details-title">Schedule & Details</div>
+                            <div class="detail-item">
+                                <span class="detail-label">Schedule</span>
+                                <span class="detail-value">${activity.schedule}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Class Size</span>
+                                <span class="detail-value">Max ${activity.capacity} participants</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Difficulty Level</span>
+                                <span class="detail-value">${activity.difficulty_level}</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-details-list">
+                            <div class="details-title">Benefits</div>
+                            ${activity.benefits.map(benefit => `
+                                <div class="detail-item">
+                                    <span style="display: flex; align-items: center; gap: 8px;">
+                                        <span>✓</span>
+                                        <span>${benefit}</span>
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="sidebar">
+                        <div class="price-box">$${activity.price}</div>
+
+                        <div class="instructor-info">
+                            <div class="instructor-avatar">👤</div>
+                            <div class="instructor-details">
+                                <h4>Instructor</h4>
+                                <p>${activity.instructor}</p>
+                                <p style="font-size: 11px; margin-top: 4px; color: #666;">${activity.instructorTitle}</p>
+                            </div>
+                        </div>
+
+                        <button class="booking-button" onclick="bookActivity(${activity.id})">
+                            Book Now
+                        </button>
+                        <button class="wishlist-button" onclick="addToWishlist(${activity.id})">
+                            ❤️ Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reviews-section">
+                    <div class="reviews-title">Student Reviews (${activity.reviews})</div>
+                    ${activity.reviews_data.map(review => `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div>
+                                    <div class="review-author">${review.author}</div>
+                                    <span class="review-rating">${'★'.repeat(review.rating)}</span>
+                                </div>
+                                <div class="review-date">${review.date}</div>
+                            </div>
+                            <div class="review-text">${review.text}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function bookActivity(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            alert(`🎉 Booked! You're registered for "${activity.name}"\n\nConfirmation will be sent to your email.`);
+        }
+
+        function addToWishlist(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            alert(`✅ Added "${activity.name}" to your wishlist!`);
+        }
+
+        // Load activity on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const activityId = getActivityFromUrl();
+            if (activityId) {
+                renderActivity(activityId);
+            } else {
+                renderActivity(null);
+            }
+        });
+    </script>
+</body>
+</html>

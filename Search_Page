@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Activities - Bobble</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .search-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-icon:hover {
+            background-color: #e0e0e0;
+        }
+
+        .filter-button {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-button:hover {
+            border-color: #000;
+        }
+
+        .filter-button.active {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .filters-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-chip {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .filter-chip:hover {
+            border-color: #000;
+        }
+
+        .filter-chip.selected {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-count {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sort-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .activity-card {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .activity-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 48px;
+            overflow: hidden;
+        }
+
+        .activity-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .activity-content {
+            padding: 16px;
+        }
+
+        .activity-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .activity-category {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .activity-location {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .activity-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .activity-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        .activity-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .activities-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .filters-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo"><a href="Main.html" style="text-decoration: none; color: inherit;">Bobble</a></div>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search activities, studios, or instructors...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>🔍</span>
+                </div>
+                <button class="filter-button" onclick="toggleFilters()">
+                    <span>⚙️</span> Filters
+                </button>
+                <select class="sort-dropdown" id="sortBy" onchange="performSort()">
+                    <option value="popular">Most Popular</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="newest">Newest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="filters-section" id="filtersSection">
+            <div class="filters-title">Activity Type</div>
+            <div class="filters-grid" id="categoryFilters">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="filters-title" style="margin-top: 20px;">Difficulty Level</div>
+            <div class="filters-grid" id="difficultyFilters">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="filters-title" style="margin-top: 20px;">Rating</div>
+            <div class="filters-grid">
+                <div class="filter-chip" onclick="filterByRating(4)">⭐ 4.0+</div>
+                <div class="filter-chip" onclick="filterByRating(4.5)">⭐ 4.5+</div>
+                <div class="filter-chip" onclick="filterByRating(4.8)">⭐ 4.8+</div>
+                <div class="filter-chip" onclick="resetFilters()">Clear All</div>
+            </div>
+        </div>
+
+        <div class="results-header">
+            <div class="results-count">
+                Showing <span id="resultCount">0</span> activities
+            </div>
+        </div>
+
+        <div class="activities-grid" id="activitiesGrid">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <div class="no-results-icon">😴</div>
+            <h3>No activities found</h3>
+            <p>Try adjusting your filters or search terms</p>
+        </div>
+    </main>
+
+    <script>
+        // Sample activity data
+        const activities = [
+            {
+                id: 1,
+                name: "Yoga Flow",
+                category: "Yoga",
+                difficulty: "Beginner",
+                location: "Downtown Studio",
+                rating: 4.8,
+                reviews: 324,
+                price: 25,
+                image: "🧘",
+                description: "Flow through sequences of poses in this energetic yoga class.",
+                instructor: "Sarah Johnson",
+                duration: 60,
+                capacity: 20
+            },
+            {
+                id: 2,
+                name: "HIIT Training",
+                category: "Cardio",
+                difficulty: "Advanced",
+                location: "Fitness Center North",
+                rating: 4.9,
+                reviews: 512,
+                price: 35,
+                image: "💪",
+                description: "High-intensity interval training to boost your cardiovascular fitness.",
+                instructor: "Mike Thompson",
+                duration: 45,
+                capacity: 15
+            },
+            {
+                id: 3,
+                name: "Pilates Core",
+                category: "Strength",
+                difficulty: "Intermediate",
+                location: "West Side Studio",
+                rating: 4.7,
+                reviews: 287,
+                price: 28,
+                image: "🤸",
+                description: "Strengthen your core with our targeted pilates program.",
+                instructor: "Emma Davis",
+                duration: 50,
+                capacity: 12
+            },
+            {
+                id: 4,
+                name: "Spin Class",
+                category: "Cardio",
+                difficulty: "Intermediate",
+                location: "Downtown Studio",
+                rating: 4.8,
+                reviews: 451,
+                price: 32,
+                image: "🚴",
+                description: "High-energy indoor cycling with motivating music and instructors.",
+                instructor: "Alex Martinez",
+                duration: 45,
+                capacity: 25
+            },
+            {
+                id: 5,
+                name: "Boxing Basics",
+                category: "Strength",
+                difficulty: "Beginner",
+                location: "Combat Sports Center",
+                rating: 4.6,
+                reviews: 198,
+                price: 30,
+                image: "🥊",
+                description: "Learn boxing fundamentals in a fun and supportive environment.",
+                instructor: "David Lee",
+                duration: 60,
+                capacity: 10
+            },
+            {
+                id: 6,
+                name: "Dance Cardio",
+                category: "Cardio",
+                difficulty: "Beginner",
+                location: "Downtown Studio",
+                rating: 4.9,
+                reviews: 634,
+                price: 24,
+                image: "💃",
+                description: "Get fit while having fun dancing to contemporary music.",
+                instructor: "Lisa Chen",
+                duration: 55,
+                capacity: 30
+            },
+            {
+                id: 7,
+                name: "Strength Training",
+                category: "Strength",
+                difficulty: "Advanced",
+                location: "Fitness Center North",
+                rating: 4.7,
+                reviews: 423,
+                price: 38,
+                image: "🏋️",
+                description: "Comprehensive strength training to build muscle and power.",
+                instructor: "James Wilson",
+                duration: 60,
+                capacity: 12
+            },
+            {
+                id: 8,
+                name: "Meditation & Mindfulness",
+                category: "Wellness",
+                difficulty: "Beginner",
+                location: "Zen Wellness Studio",
+                rating: 4.9,
+                reviews: 289,
+                price: 18,
+                image: "🧠",
+                description: "Reduce stress and improve mental clarity through guided meditation.",
+                instructor: "Monica Patel",
+                duration: 30,
+                capacity: 20
+            }
+        ];
+
+        let filteredActivities = [...activities];
+        let currentFilters = {
+            categories: [],
+            difficulties: [],
+            minRating: 0,
+            search: ""
+        };
+
+        function initializeFilters() {
+            const categories = [...new Set(activities.map(a => a.category))];
+            const difficulties = [...new Set(activities.map(a => a.difficulty))];
+
+            const categoryContainer = document.getElementById('categoryFilters');
+            categories.forEach(cat => {
+                const chip = document.createElement('div');
+                chip.className = 'filter-chip';
+                chip.textContent = cat;
+                chip.onclick = () => toggleFilter('categories', cat, chip);
+                categoryContainer.appendChild(chip);
+            });
+
+            const difficultyContainer = document.getElementById('difficultyFilters');
+            difficultyFilters = ['Beginner', 'Intermediate', 'Advanced'];
+            difficultyFilters.forEach(diff => {
+                const chip = document.createElement('div');
+                chip.className = 'filter-chip';
+                chip.textContent = diff;
+                chip.onclick = () => toggleFilter('difficulties', diff, chip);
+                difficultyContainer.appendChild(chip);
+            });
+        }
+
+        function toggleFilter(filterType, value, element) {
+            const index = currentFilters[filterType].indexOf(value);
+            if (index > -1) {
+                currentFilters[filterType].splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                currentFilters[filterType].push(value);
+                element.classList.add('selected');
+            }
+            applyFilters();
+        }
+
+        function filterByRating(rating) {
+            currentFilters.minRating = rating;
+            applyFilters();
+        }
+
+        function performSearch() {
+            currentFilters.search = document.getElementById('searchInput').value.toLowerCase();
+            applyFilters();
+        }
+
+        function performSort() {
+            const sortBy = document.getElementById('sortBy').value;
+            const sorted = [...filteredActivities];
+
+            switch(sortBy) {
+                case 'popular':
+                    sorted.sort((a, b) => b.reviews - a.reviews);
+                    break;
+                case 'rating':
+                    sorted.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'newest':
+                    sorted.sort((a, b) => b.id - a.id);
+                    break;
+                case 'price-low':
+                    sorted.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sorted.sort((a, b) => b.price - a.price);
+                    break;
+            }
+            filteredActivities = sorted;
+            renderActivities();
+        }
+
+        function applyFilters() {
+            filteredActivities = activities.filter(activity => {
+                const matchesCategory = currentFilters.categories.length === 0 || 
+                    currentFilters.categories.includes(activity.category);
+                const matchesDifficulty = currentFilters.difficulties.length === 0 || 
+                    currentFilters.difficulties.includes(activity.difficulty);
+                const matchesRating = activity.rating >= currentFilters.minRating;
+                const matchesSearch = currentFilters.search === '' || 
+                    activity.name.toLowerCase().includes(currentFilters.search) ||
+                    activity.category.toLowerCase().includes(currentFilters.search) ||
+                    activity.instructor.toLowerCase().includes(currentFilters.search);
+
+                return matchesCategory && matchesDifficulty && matchesRating && matchesSearch;
+            });
+
+            renderActivities();
+        }
+
+        function renderActivities() {
+            const grid = document.getElementById('activitiesGrid');
+            const noResults = document.getElementById('noResults');
+            const resultCount = document.getElementById('resultCount');
+
+            if (filteredActivities.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                resultCount.textContent = '0';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            resultCount.textContent = filteredActivities.length;
+
+            grid.innerHTML = filteredActivities.map(activity => `
+                <a href="Individual_Activity_Template?id=${activity.id}" class="activity-card">
+                    <div class="activity-image">${activity.image}</div>
+                    <div class="activity-content">
+                        <div class="activity-name">${activity.name}</div>
+                        <div class="activity-category">${activity.category}</div>
+                        <div class="activity-location">
+                            <span>📍</span>
+                            <span>${activity.location}</span>
+                        </div>
+                        <div class="activity-footer">
+                            <div class="activity-rating">
+                                <span class="rating-stars">★</span>
+                                <span>${activity.rating} (${activity.reviews})</span>
+                            </div>
+                            <div class="activity-price">$${activity.price}</div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function resetFilters() {
+            currentFilters = {
+                categories: [],
+                difficulties: [],
+                minRating: 0,
+                search: ""
+            };
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+
+        function toggleFilters() {
+            const section = document.getElementById('filtersSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFilters();
+            renderActivities();
+        });
+
+        // Allow Enter key for search
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    </script>
+</body>
+</html>
