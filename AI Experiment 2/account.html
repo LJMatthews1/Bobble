@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - FitHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo"><a href="index.html">FitHub</a></div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="classes.html">Classes</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="account.html">Account</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="account-section">
+        <div class="container">
+            <h2>My Account</h2>
+            
+            <div class="account-grid">
+                <div class="account-card">
+                    <h3>Profile Information</h3>
+                    <p><strong>Name:</strong> John Doe</p>
+                    <p><strong>Email:</strong> john@example.com</p>
+                    <p><strong>Membership:</strong> Premium</p>
+                    <button class="btn btn-secondary">Edit Profile</button>
+                </div>
+
+                <div class="account-card">
+                    <h3>Upcoming Classes</h3>
+                    <ul>
+                        <li>🧘 Yoga - Monday 9:00 AM</li>
+                        <li>🏃 HIIT - Wednesday 6:00 PM</li>
+                        <li>💪 Strength - Friday 7:00 PM</li>
+                    </ul>
+                    <button class="btn btn-secondary">View All</button>
+                </div>
+
+                <div class="account-card">
+                    <h3>Subscription</h3>
+                    <p><strong>Plan:</strong> Premium Monthly</p>
+                    <p><strong>Cost:</strong> $99/month</p>
+                    <p><strong>Renewal:</strong> Feb 20, 2026</p>
+                    <button class="btn btn-secondary">Manage Subscription</button>
+                </div>
+
+                <div class="account-card">
+                    <h3>Settings</h3>
+                    <button class="btn btn-secondary">Change Password</button>
+                    <button class="btn btn-secondary">Notifications</button>
+                    <button class="btn btn-secondary">Privacy</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 FitHub. All rights reserved.</p>
+    </footer>
+    <script src="js/menu.js"></script>
+</body>
+</html>
