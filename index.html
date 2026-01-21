@@ -88,7 +88,11 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>What is Bobble?</h1>
+            <h1 class="bobble-title">
+                <span class="what-is">What is </span>
+                <span class="bobble-word">Bobble</span>
+                <span class="question-mark">?</span>
+            </h1>
             <p>Bobble is a credit-based plan that gives you access to hundreds of classes in London, where you can take your friends or make new ones</p>
             <a href="classes.html" class="btn btn-primary">Browse Classes</a>
             <a href="about.html" class="btn btn-secondary">Learn more about Bobble</a>
@@ -152,5 +156,14 @@
     
     <!-- Standard UI Scripts -->
     <script src="js/menu.js"></script>
+    <script>
+        // Bobble title animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const bobbleTitle = document.querySelector('.bobble-title');
+            
+            // Start animation immediately
+            bobbleTitle.classList.add('animate');
+        });
+    </script>
 </body>
 </html>

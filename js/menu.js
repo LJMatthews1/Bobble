@@ -21,3 +21,21 @@ document.querySelectorAll('.dropdown > .dropbtn').forEach(btn => {
         }
     });
 });
+
+// Desktop dropdown hover behavior
+document.querySelectorAll('.nav-links li.dropdown').forEach(dropdown => {
+    let hideTimeout;
+    
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimeout);
+        const menu = dropdown.querySelector('.dropdown-menu');
+        menu.style.display = 'block';
+    });
+    
+    dropdown.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(() => {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            menu.style.display = 'none';
+        }, 150); // 150ms delay before hiding so it makes it easier to press
+    });
+});
