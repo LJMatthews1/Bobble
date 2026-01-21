@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bobble - Book Fitness Classes</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK v11 Web -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -28,7 +32,7 @@
                 </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="account.html">Account</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li id="auth-link"><a href="login.html">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -144,5 +148,31 @@
 					</footer>
     </div>
     <script src="js/menu.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Update navigation based on auth state
+        console.log("📌 Initializing homepage auth check...");
+        checkAuthState(function(user) {
+            const authLink = document.getElementById('auth-link');
+            if (user) {
+                console.log("✓ User logged in, updating nav to show Logout");
+                authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
+                document.getElementById('logout-btn').addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    console.log("🔄 User clicked logout button");
+                    try {
+                        await logoutUser();
+                        console.log("✓ Logout successful, redirecting to home");
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error("❌ Logout error:", error);
+                    }
+                });
+            } else {
+                console.log("ℹ No user logged in, keeping Login link");
+                authLink.innerHTML = '<a href="login.html">Login</a>';
+            }
+        });
+    </script>
 </body>
 </html>
