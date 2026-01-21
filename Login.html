@@ -3,419 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bobble - Hobby Subscription</title>
-    
-    <!-- 
-      IMPORTANT FOR VS CODE: 
-      1. Save this file as "index.html"
-      2. If VS Code shows JS highlighting, click "Plain Text" or "JavaScript" in the bottom right 
-         and change it to "HTML".
-    -->
-
-    <!-- 1. Tailwind CSS (Styling) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. React & ReactDOM (Frontend Framework) -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- 3. Babel (Enables JSX in browser) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Custom Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Prevent layout shift during React load */
-        #root:empty { min-height: 100vh; background-color: #f8fafc; }
-    </style>
+    <title>Login - Bobble</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK v11 Web -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-900">
-    
-    <div id="root"></div>
-
-    <!-- MAIN APP SCRIPT -->
-    <script type="text/babel" data-type="module">
-        
-        // --- IMPORTS FROM CDN ---
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            onAuthStateChanged,
-            updateProfile 
-        } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc 
-        } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
-
-        // --- 1. CONFIGURATION ---
-        
-        // !!! IMPORTANT FOR VS CODE !!!
-        // Replace the object below with your actual Firebase config from the Firebase Console
-        const localFirebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
-        };
-
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : localFirebaseConfig;
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bobble-web-app';
-
-        // Initialize Firebase
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch (e) {
-            console.error("Firebase init error. Ensure you have provided a valid config.", e);
-        }
-
-        // --- 2. ICONS (Inline SVGs) ---
-        const Icons = {
-            Bobble: ({ className }) => (
-                <div className={`flex items-center gap-2 ${className}`}>
-                    <div className="relative flex items-center justify-center bg-gradient-to-tr from-blue-400 to-teal-400 w-8 h-8 rounded-full text-white font-bold shadow-lg">
-                        B
-                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full border-2 border-white"></span>
-                    </div>
-                    <span className="font-black tracking-tight text-slate-800 text-2xl">bobble</span>
-                </div>
-            ),
-            User: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-            Activity: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-            CreditCard: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>,
-            MapPin: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
-            Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
-            LogOut: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>,
-            CheckCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-            ArrowRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
-            Sparkles: () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H5"/><path d="M19 15v4"/><path d="M21 19h-4"/></svg>
-        };
-
-        // --- 3. REUSABLE UI COMPONENTS ---
-        
-        const InputField = ({ label, type, value, onChange, placeholder, icon }) => (
-            <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">{label}</label>
-                <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                        {icon}
-                    </div>
-                    <input
-                        type={type}
-                        value={value}
-                        onChange={onChange}
-                        className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
-                        placeholder={placeholder}
-                        required
-                    />
-                </div>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo"><a href="index.html">Bobble</a></div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-        );
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                 <li class="dropdown">
+                    <a href="classes.html" class="dropbtn">Classes</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="classes.html">All Classes</a></li>
+                        <li><a href="classes.html">Arts &amp; Crafts</a></li>
+                        <li><a href="classes.html">Sports</a></li>
+                    </ul>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="account.html">Account</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
 
-        const ClassCard = ({ title, credits, location, category, imageColor }) => (
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer group">
-                <div className={`h-32 rounded-xl ${imageColor} mb-4 relative overflow-hidden`}>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-50 group-hover:scale-105 transition-transform duration-500">
-                        <Icons.Sparkles className="text-white" />
-                    </div>
-                    <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-slate-700 shadow-sm">
-                        {credits} Credits
-                    </div>
+    <section class="form-section">
+        <div class="form-container">
+            <h2>Login to Bobble</h2>
+            <div id="error-message" class="error-message" style="display:none; color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border-radius: 4px;"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
                 </div>
-                <div className="space-y-1">
-                    <div className="text-xs font-bold text-blue-500 uppercase tracking-wide">{category}</div>
-                    <h3 className="font-bold text-slate-800 text-lg leading-tight">{title}</h3>
-                    <div className="flex items-center text-slate-400 text-sm gap-1">
-                        <Icons.MapPin />
-                        <span>{location}</span>
-                    </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
                 </div>
-            </div>
-        );
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+        </div>
+    </section>
 
-        // --- 4. MAIN APP LOGIC ---
+    <footer>
+        <p>&copy; 2026 Bobble. All rights reserved.</p>
+    </footer>
+    <script src="js/menu.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        console.log("📌 Login page loaded");
 
-        function BobbleApp() {
-            const [user, setUser] = React.useState(null);
-            const [profile, setProfile] = React.useState(null);
-            const [view, setView] = React.useState('login'); 
-            const [loading, setLoading] = React.useState(true);
-            const [error, setError] = React.useState('');
-
-            const [email, setEmail] = React.useState('');
-            const [password, setPassword] = React.useState('');
-            const [name, setName] = React.useState('');
-
-            React.useEffect(() => {
-                if (!auth) return;
-                const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-                    setUser(currentUser);
-                    if (currentUser) {
-                        try {
-                            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'main');
-                            const docSnap = await getDoc(docRef);
-                            
-                            if (docSnap.exists()) {
-                                setProfile(docSnap.data());
-                            } else {
-                                setProfile({ name: currentUser.displayName || 'User', credits: 25, membershipTier: 'Standard' });
-                            }
-                            setView('dashboard');
-                        } catch (err) {
-                            console.error("Profile fetch error:", err);
-                            setProfile({ name: currentUser.displayName || 'User', credits: 25, membershipTier: 'Standard' });
-                            setView('dashboard');
-                        }
-                    } else {
-                        setProfile(null);
-                        setView('login');
-                    }
-                    setLoading(false);
-                });
-                return () => unsubscribe();
-            }, []);
-
-            const handleSignup = async (e) => {
-                e.preventDefault();
-                setError('');
-                setLoading(true);
-
-                if (!auth) {
-                    setError("Firebase not initialized properly.");
-                    setLoading(false);
-                    return;
-                }
-
-                try {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const newUser = userCredential.user;
-                    await updateProfile(newUser, { displayName: name });
-
-                    const userProfile = {
-                        name: name,
-                        email: email,
-                        credits: 25, 
-                        memberSince: new Date().toISOString(),
-                        membershipTier: 'Standard (£25/mo)'
-                    };
-                    
-                    try {
-                        await setDoc(doc(db, 'artifacts', appId, 'users', newUser.uid, 'profile', 'main'), userProfile);
-                    } catch(e) {
-                        console.log("Firestore write skipped (Rules/Offline). State updated locally.");
-                    }
-
-                    setProfile(userProfile);
-                } catch (err) {
-                    setError(err.message.replace('Firebase:', ''));
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            const handleLogin = async (e) => {
-                e.preventDefault();
-                setError('');
-                setLoading(true);
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } catch (err) {
-                    setError("Invalid email or password.");
-                    setLoading(false);
-                }
-            };
-
-            const handleLogout = async () => {
-                await signOut(auth);
-                setEmail('');
-                setPassword('');
-                setName('');
-                setView('login');
-            };
-
-            if (loading && !user && view !== 'login' && view !== 'signup') {
-                return (
-                    <div className="min-h-screen bg-blue-50 flex items-center justify-center">
-                        <div className="animate-spin text-blue-500">
-                           <Icons.Activity />
-                        </div>
-                    </div>
-                );
+        // Check if user is already logged in
+        checkAuthState(function(user) {
+            if (user) {
+                console.log("✓ User already logged in, redirecting to account");
+                window.location.href = 'account.html';
+            } else {
+                console.log("ℹ User not logged in, showing login form");
             }
+        });
 
-            if (view === 'login') {
-                return (
-                    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
-                        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-500 to-teal-400 p-8 text-center relative overflow-hidden">
-                                <div className="absolute -top-10 -left-10 w-40 h-40 bg-white opacity-10 rounded-full"></div>
-                                <div className="absolute top-20 -right-10 w-40 h-40 bg-white opacity-10 rounded-full"></div>
-                                <div className="flex justify-center mb-4">
-                                    <div className="bg-white p-3 rounded-full shadow-lg">
-                                        <div className="relative flex items-center justify-center bg-gradient-to-tr from-blue-400 to-teal-400 w-8 h-8 rounded-full text-white font-bold">
-                                            B
-                                        </div>
-                                    </div>
-                                </div>
-                                <h2 className="text-3xl font-black text-white tracking-tight">Welcome Back</h2>
-                                <p className="text-blue-50 mt-2">Log in to manage your hobby credits</p>
-                            </div>
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log("📝 Login form submitted");
 
-                            <div className="p-8">
-                                <form onSubmit={handleLogin} className="space-y-6">
-                                    <InputField 
-                                        label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} 
-                                        placeholder="you@example.com" icon={<Icons.User />} 
-                                    />
-                                    <InputField 
-                                        label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} 
-                                        placeholder="••••••••" icon={<Icons.Activity />} 
-                                    />
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
 
-                                    {error && (
-                                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl flex items-center gap-2">
-                                            <Icons.Activity /> {error}
-                                        </div>
-                                    )}
+            // Clear previous errors
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
 
-                                    <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-800 hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
-                                        {loading ? 'Loading...' : 'Log In'}
-                                    </button>
-                                </form>
-
-                                <div className="mt-8 text-center">
-                                    <p className="text-slate-500 text-sm">
-                                        New to Bobble? <button onClick={() => setView('signup')} className="text-blue-600 font-bold hover:underline">Join the club</button>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
+            try {
+                console.log("🔄 Attempting to login user:", email);
+                await loginUser(email, password);
+                console.log("✓ Login successful, redirecting to account page");
+                setTimeout(() => {
+                    window.location.href = 'account.html';
+                }, 500);
+            } catch (error) {
+                console.error("❌ Login error:", error.message);
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
             }
-
-            if (view === 'signup') {
-                return (
-                    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
-                        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
-                            <div className="p-8 pb-0">
-                                <Icons.Bobble className="justify-center" />
-                                <h2 className="text-2xl font-black text-slate-900 mt-6 text-center">Create Account</h2>
-                                <p className="text-slate-500 mt-1 text-center">Start with 25 credits for £25/mo.</p>
-                            </div>
-
-                            <div className="p-8 pt-6">
-                                <form onSubmit={handleSignup} className="space-y-5">
-                                    <InputField 
-                                        label="Full Name" type="text" value={name} onChange={(e) => setName(e.target.value)} 
-                                        placeholder="Jane Doe" icon={<Icons.User />} 
-                                    />
-                                    <InputField 
-                                        label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} 
-                                        placeholder="jane@example.com" icon={<Icons.User />} 
-                                    />
-                                    <InputField 
-                                        label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} 
-                                        placeholder="Strong password" icon={<Icons.Activity />} 
-                                    />
-
-                                    {error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl">{error}</div>}
-
-                                    <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-500 to-teal-400 text-white font-bold py-4 rounded-xl shadow-lg hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
-                                        {loading ? 'Creating...' : 'Get Started'} <Icons.ArrowRight />
-                                    </button>
-                                </form>
-
-                                <div className="mt-6 text-center">
-                                    <p className="text-slate-500 text-sm">
-                                        Already a member? <button onClick={() => setView('login')} className="text-blue-600 font-bold hover:underline">Log In</button>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-                    <nav className="bg-white sticky top-0 z-10 px-6 py-4 shadow-sm flex items-center justify-between">
-                        <Icons.Bobble />
-                        <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors">
-                            <Icons.LogOut />
-                        </button>
-                    </nav>
-
-                    <main className="max-w-xl mx-auto p-6 space-y-8">
-                        <section className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
-                            <div className="relative z-10">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                        <h1 className="text-2xl font-bold">Hi, {profile?.name ? profile.name.split(' ')[0] : 'User'}!</h1>
-                                        <p className="text-slate-400 text-sm">{profile?.membershipTier || 'Member'}</p>
-                                    </div>
-                                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
-                                        <Icons.User />
-                                    </div>
-                                </div>
-
-                                <div className="bg-white/10 rounded-2xl p-4 flex items-center justify-between backdrop-blur-sm border border-white/10">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-orange-400 rounded-lg text-white shadow-lg">
-                                            <Icons.CreditCard />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Balance</div>
-                                            <div className="text-xl font-bold">{profile?.credits || 0} Credits</div>
-                                        </div>
-                                    </div>
-                                    <button className="bg-white text-slate-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-200 transition-colors">Top Up</button>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section>
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-bold flex items-center gap-2">
-                                    <Icons.Search /> Discover Near You
-                                </h2>
-                                <span className="text-xs font-bold text-slate-400 uppercase">London</span>
-                            </div>
-
-                            <div className="grid gap-4">
-                                <ClassCard title="Intro to Pottery Wheel" category="Craft" credits={12} location="Hackney, E8" imageColor="bg-amber-100" />
-                                <ClassCard title="Salsa for Beginners" category="Dance" credits={6} location="Shoreditch, E1" imageColor="bg-rose-100" />
-                                <ClassCard title="Silver Ring Making" category="Jewellery" credits={18} location="London Bridge, SE1" imageColor="bg-slate-200" />
-                                <ClassCard title="Run Club + Coffee" category="Social" credits={2} location="Hyde Park, W2" imageColor="bg-emerald-100" />
-                            </div>
-                        </section>
-                        
-                        <div className="flex items-center justify-center gap-2 text-slate-400 text-xs mt-8">
-                           <Icons.CheckCircle />
-                           <span>Identity Verified & Secure Payment</span>
-                        </div>
-                    </main>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<BobbleApp />);
+        });
     </script>
 </body>
 </html>
