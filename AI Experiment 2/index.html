@@ -5,10 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bobble - Book Fitness Classes</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDK v11 Web -->
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
+    
+    <!-- 
+      DEBUG: We are using ES Modules (type="module") for Firebase v11. 
+      If the page is blank, check the console (F12) for "Import Map" or "CORS" errors.
+    -->
+    <script type="module">
+        // Import the specific functions needed from the CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // Your specific Firebase configuration for the Bobble project
+        const firebaseConfig = {
+            apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+            authDomain: "bobble-13959.firebaseapp.com",
+            projectId: "bobble-13959",
+            storageBucket: "bobble-13959.firebasestorage.app",
+            messagingSenderId: "164832587163",
+            appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        // Initialize Firebase
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            console.log("DEBUG: Firebase initialized successfully on index.html");
+
+            // --- Navigation Logic ---
+            onAuthStateChanged(auth, (user) => {
+                const authLink = document.getElementById('auth-link');
+                if (user) {
+                    console.log("DEBUG: User detected (" + user.email + "). Updating nav to Logout.");
+                    authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
+                    
+                    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        try {
+                            console.log("DEBUG: Attempting logout...");
+                            await signOut(auth);
+                            window.location.reload();
+                        } catch (error) {
+                            console.error("DEBUG ERROR: Logout failed. Check internet connection.", error);
+                        }
+                    });
+                } else {
+                    console.log("DEBUG: No active session. Showing Login link.");
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            });
+
+        } catch (error) {
+            console.error("DEBUG ERROR: Firebase failed to load. Check if your apiKey is correct in index.html.", error);
+        }
+    </script>
 </head>
 <body>
 
@@ -69,110 +118,39 @@
             </div>
         </div>
     </section>
-								<div id="footer-wrapper">
-					<footer id="footer" class="container">
-						<div class="row">
-							<div class="col-3 col-6-medium col-12-small">
 
-								<!-- Links -->
-									<section class="widget links">
-										<h3>Random Stuff</h3>
-										<ul class="style2">
-											<li><a href="#">Etiam feugiat condimentum</a></li>
-											<li><a href="#">Aliquam imperdiet suscipit odio</a></li>
-											<li><a href="#">Sed porttitor cras in erat nec</a></li>
-											<li><a href="#">Felis varius pellentesque potenti</a></li>
-											<li><a href="#">Nullam scelerisque blandit leo</a></li>
-										</ul>
-									</section>
-
-							</div>
-							<div class="col-3 col-6-medium col-12-small">
-
-								<!-- Links -->
-									<section class="widget links">
-										<h3>Random Stuff</h3>
-										<ul class="style2" >
-											<li><a href="#">Etiam feugiat condimentum</a></li>
-											<li><a href="#">Aliquam imperdiet suscipit odio</a></li>
-											<li><a href="#">Sed porttitor cras in erat nec</a></li>
-											<li><a href="#">Felis varius pellentesque potenti</a></li>
-											<li><a href="#">Nullam scelerisque blandit leo</a></li>
-										</ul>
-									</section>
-
-							</div>
-							<div class="col-3 col-6-medium col-12-small">
-
-								<!-- Links -->
-									<section class="widget links">
-										<h3>Random Stuff</h3>
-										<ul class="style2">
-											<li><a href="#">Etiam feugiat condimentum</a></li>
-											<li><a href="#">Aliquam imperdiet suscipit odio</a></li>
-											<li><a href="#">Sed porttitor cras in erat nec</a></li>
-											<li><a href="#">Felis varius pellentesque potenti</a></li>
-											<li><a href="#">Nullam scelerisque blandit leo</a></li>
-										</ul>
-									</section>
-
-							</div>
-							<div class="col-3 col-6-medium col-12-small">
-
-								<!-- Contact -->
-									<section class="widget contact last">
-										<h3>Contact Us</h3>
-										<ul>
-											<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-											<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-											<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-											<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-											<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-										</ul>
-										<p>1234 Fictional Road<br />
-										Nashville, TN 00000<br />
-										(800) 555-0000</p>
-									</section>
-
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div id="copyright">
-									<ul class="menu">
-										<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</footer>
+    <div id="footer-wrapper">
+        <footer id="footer" class="container">
+            <div class="row">
+                <div class="col-3 col-6-medium col-12-small">
+                    <section class="widget links">
+                        <h3>Random Stuff</h3>
+                        <ul class="style2">
+                            <li><a href="#">Etiam feugiat condimentum</a></li>
+                            <li><a href="#">Aliquam imperdiet suscipit odio</a></li>
+                        </ul>
+                    </section>
+                </div>
+                <div class="col-3 col-6-medium col-12-small">
+                    <section class="widget contact last">
+                        <h3>Contact Us</h3>
+                        <p>1234 Fictional Road<br />London, UK<br />(800) 555-0000</p>
+                    </section>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div id="copyright">
+                        <ul class="menu">
+                            <li>&copy; Bobble 2024. All rights reserved</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+    <!-- Standard UI Scripts -->
     <script src="js/menu.js"></script>
-    <script src="js/auth.js"></script>
-    <script>
-        // Update navigation based on auth state
-        console.log("📌 Initializing homepage auth check...");
-        checkAuthState(function(user) {
-            const authLink = document.getElementById('auth-link');
-            if (user) {
-                console.log("✓ User logged in, updating nav to show Logout");
-                authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
-                document.getElementById('logout-btn').addEventListener('click', async function(e) {
-                    e.preventDefault();
-                    console.log("🔄 User clicked logout button");
-                    try {
-                        await logoutUser();
-                        console.log("✓ Logout successful, redirecting to home");
-                        window.location.href = 'index.html';
-                    } catch (error) {
-                        console.error("❌ Logout error:", error);
-                    }
-                });
-            } else {
-                console.log("ℹ No user logged in, keeping Login link");
-                authLink.innerHTML = '<a href="login.html">Login</a>';
-            }
-        });
-    </script>
 </body>
 </html>
