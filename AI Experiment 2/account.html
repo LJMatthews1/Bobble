@@ -3,8 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account - FitHub</title>
+    <title>My Account - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK v11 Web -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
+    <style>
+        .credits-card {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            text-align: center;
+        }
+
+        .credits-card h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .credits-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .credits-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .profile-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .profile-info-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+
+        .profile-info-item label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .profile-info-item p {
+            color: #555;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+
+        .error-message {
+            background-color: #ffe6e6;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+
+            .credits-amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -27,7 +141,7 @@
                 </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="account.html">Account</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li id="auth-link"><a href="login.html">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -36,46 +150,145 @@
         <div class="container">
             <h2>My Account</h2>
             
-            <div class="account-grid">
-                <div class="account-card">
+            <div id="loading" class="loading" style="display: none;">
+                ⏳ Loading your account information...
+            </div>
+
+            <div id="error-container" class="error-message" style="display: none;"></div>
+
+            <div id="account-content" style="display: none;">
+                <!-- Credits Card -->
+                <div class="credits-card">
+                    <h3>Your Available Credits</h3>
+                    <div class="credits-amount" id="credits-display">0</div>
+                    <p class="credits-label">Use credits to book fitness classes</p>
+                </div>
+
+                <!-- Profile Information Card -->
+                <div class="profile-card">
                     <h3>Profile Information</h3>
-                    <p><strong>Name:</strong> John Doe</p>
-                    <p><strong>Email:</strong> john@example.com</p>
-                    <p><strong>Membership:</strong> Premium</p>
-                    <button class="btn btn-secondary">Edit Profile</button>
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <label>Name</label>
+                            <p id="user-name">Loading...</p>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>Email</label>
+                            <p id="user-email">Loading...</p>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>Account Created</label>
+                            <p id="user-created">Loading...</p>
+                        </div>
+                        <div class="profile-info-item">
+                            <label>User ID</label>
+                            <p id="user-id">Loading...</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="account-card">
-                    <h3>Upcoming Classes</h3>
-                    <ul>
-                        <li>🧘 Yoga - Monday 9:00 AM</li>
-                        <li>🏃 HIIT - Wednesday 6:00 PM</li>
-                        <li>💪 Strength - Friday 7:00 PM</li>
-                    </ul>
-                    <button class="btn btn-secondary">View All</button>
-                </div>
-
-                <div class="account-card">
-                    <h3>Subscription</h3>
-                    <p><strong>Plan:</strong> Premium Monthly</p>
-                    <p><strong>Cost:</strong> $99/month</p>
-                    <p><strong>Renewal:</strong> Feb 20, 2026</p>
-                    <button class="btn btn-secondary">Manage Subscription</button>
-                </div>
-
-                <div class="account-card">
-                    <h3>Settings</h3>
-                    <button class="btn btn-secondary">Change Password</button>
-                    <button class="btn btn-secondary">Notifications</button>
-                    <button class="btn btn-secondary">Privacy</button>
+                <!-- Account Actions -->
+                <div class="profile-card">
+                    <h3>Account Actions</h3>
+                    <button class="btn btn-logout" id="logout-button">Logout</button>
                 </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 FitHub. All rights reserved.</p>
+        <p>&copy; 2026 Bobble. All rights reserved.</p>
     </footer>
+
     <script src="js/menu.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        console.log("📌 Account page loaded");
+
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error-container');
+        const accountContent = document.getElementById('account-content');
+
+        // Check authentication and load user data
+        checkAuthState(async function(user) {
+            if (user) {
+                console.log("✓ User is authenticated. UID:", user.uid);
+                loadingDiv.style.display = 'block';
+
+                try {
+                    console.log("📥 Fetching user data from Firestore...");
+                    const userData = await getUserData(user.uid);
+                    console.log("✓ User data retrieved:", userData);
+
+                    // Display user information
+                    console.log("🎨 Rendering user profile...");
+                    document.getElementById('user-name').textContent = userData.name || "Not set";
+                    document.getElementById('user-email').textContent = userData.email || user.email;
+                    document.getElementById('user-id').textContent = user.uid;
+                    
+                    // Format creation date
+                    if (userData.createdAt) {
+                        const createdDate = new Date(userData.createdAt.toDate()).toLocaleDateString();
+                        document.getElementById('user-created').textContent = createdDate;
+                    } else {
+                        document.getElementById('user-created').textContent = "Unknown";
+                    }
+
+                    // Display credits prominently
+                    const credits = userData.credits !== undefined ? userData.credits : 0;
+                    document.getElementById('credits-display').textContent = credits;
+                    console.log("💳 User credits:", credits);
+
+                    // Update navigation
+                    const authLink = document.getElementById('auth-link');
+                    authLink.innerHTML = '<a href="#" id="nav-logout">Logout</a>';
+                    document.getElementById('nav-logout').addEventListener('click', handleLogout);
+
+                    // Show account content
+                    loadingDiv.style.display = 'none';
+                    accountContent.style.display = 'block';
+                    console.log("✓ Account page rendered successfully");
+
+                } catch (error) {
+                    console.error("❌ Error loading user data:", error.message);
+                    loadingDiv.style.display = 'none';
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = "Error loading account information: " + error.message;
+                }
+            } else {
+                // User not logged in
+                console.log("⚠ User not logged in, redirecting to login page");
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = "You must be logged in to view this page. Redirecting to login...";
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+
+        // Handle logout
+        async function handleLogout(e) {
+            if (e) e.preventDefault();
+            console.log("🚪 Logout initiated");
+            try {
+                await logoutUser();
+                console.log("✓ Logout successful, redirecting to home");
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error("❌ Logout error:", error.message);
+                alert("Error logging out: " + error.message);
+            }
+        }
+
+        // Logout button click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logout-button');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+                console.log("✓ Logout button event listener attached");
+            }
+        });
+    </script>
 </body>
 </html>
