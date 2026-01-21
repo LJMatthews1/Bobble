@@ -7,6 +7,26 @@
     box-sizing: border-box;
 }
 
+/* Mobile: allow toggling submenu with an "open" class */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        display: none;
+        background-color: transparent;
+    }
+
+    .nav-links li.open .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown .dropbtn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -61,6 +81,42 @@ body {
 
 .nav-links a:hover {
     color: #3498db;
+}
+
+/* Dropdown (desktop hover) */
+.nav-links li.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background-color: #3498db;
+    min-width: 180px;
+    list-style: none;
+    padding: 0.25rem 0;
+    margin: 0;
+    display: none;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    z-index: 200;
+}
+
+.dropdown-menu li a {
+    color: white;
+    padding: 0.5rem 1rem;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+    background-color: rgba(255,255,255,0.04);
+    color: #3498db;
+}
+
+.nav-links li.dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 /* Hamburger Menu */

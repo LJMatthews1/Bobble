@@ -9,3 +9,15 @@ document.querySelectorAll('.nav-links a').forEach(link => {
         document.querySelector('.nav-links').classList.remove('active');
     });
 });
+
+// Toggle dropdown submenu on small screens when parent button is clicked
+document.querySelectorAll('.dropdown > .dropbtn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const hamburger = document.querySelector('.hamburger');
+        const isMobile = window.getComputedStyle(hamburger).display !== 'none';
+        if (isMobile) {
+            e.preventDefault();
+            btn.parentElement.classList.toggle('open');
+        }
+    });
+});
