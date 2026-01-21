@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK v11 Web -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -35,7 +39,8 @@
     <section class="form-section">
         <div class="form-container">
             <h2>Login to Bobble</h2>
-            <form>
+            <div id="error-message" class="error-message" style="display:none; color: red; padding: 10px; margin-bottom: 15px; background-color: #ffe6e6; border-radius: 4px;"></div>
+            <form id="login-form">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" placeholder="your@email.com" required>
@@ -54,5 +59,46 @@
         <p>&copy; 2026 Bobble. All rights reserved.</p>
     </footer>
     <script src="js/menu.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        console.log("📌 Login page loaded");
+
+        // Check if user is already logged in
+        checkAuthState(function(user) {
+            if (user) {
+                console.log("✓ User already logged in, redirecting to account");
+                window.location.href = 'account.html';
+            } else {
+                console.log("ℹ User not logged in, showing login form");
+            }
+        });
+
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log("📝 Login form submitted");
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+
+            // Clear previous errors
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            try {
+                console.log("🔄 Attempting to login user:", email);
+                await loginUser(email, password);
+                console.log("✓ Login successful, redirecting to account page");
+                setTimeout(() => {
+                    window.location.href = 'account.html';
+                }, 500);
+            } catch (error) {
+                console.error("❌ Login error:", error.message);
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
