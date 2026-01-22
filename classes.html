@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Classes - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase Realtime Database SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -38,138 +41,7 @@
             
             <div class="classes-grid">
                 <div class="class-card">
-                    <h3>Yoga</h3>
-                    <p><strong>Instructor:</strong> Sarah Johnson</p>
-                    <p><strong>Time:</strong> Monday 9:00 AM</p>
-                    <p><strong>Duration:</strong> 60 minutes</p>
-                    <p><strong>Level:</strong> Beginner</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Pilates</h3>
-                    <p><strong>Instructor:</strong> Mike Chen</p>
-                    <p><strong>Time:</strong> Wednesday 6:00 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Strength Training</h3>
-                    <p><strong>Instructor:</strong> James Smith</p>
-                    <p><strong>Time:</strong> Friday 7:00 PM</p>
-                    <p><strong>Duration:</strong> 60 minutes</p>
-                    <p><strong>Level:</strong> Advanced</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Dance</h3>
-                    <p><strong>Instructor:</strong> Emma Wilson</p>
-                    <p><strong>Time:</strong> Saturday 10:00 AM</p>
-                    <p><strong>Duration:</strong> 55 minutes</p>
-                    <p><strong>Level:</strong> Beginner</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Painting</h3>
-                    <p><strong>Instructor:</strong> Lisa Anderson</p>
-                    <p><strong>Time:</strong> Tuesday 5:30 PM</p>
-                    <p><strong>Duration:</strong> 50 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Spin Class</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Cooking</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Wine Tasting</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Baking</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Language Classes</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Cheese Tasting</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Guitar Classes</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Piano Classes</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Acting Classes</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
-                </div>
-
-                <div class="class-card">
-                    <h3>Vocal Classes</h3>
-                    <p><strong>Instructor:</strong> David Brown</p>
-                    <p><strong>Time:</strong> Thursday 6:30 PM</p>
-                    <p><strong>Duration:</strong> 45 minutes</p>
-                    <p><strong>Level:</strong> Intermediate</p>
-                    <a href="individual_class_template.html" class="btn btn-primary">Explore Classes</a>
+                    <p>Loading...</p>
                 </div>
             </div>
         </div>
@@ -206,5 +78,58 @@
         </footer>
     </div>
     <script src="js/menu.js"></script>
+    <script>
+        // Firebase Configuration (from js/auth.js)
+        const firebaseConfig = {
+          apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+          authDomain: "bobble-13959.firebaseapp.com",
+          projectId: "bobble-13959",
+          storageBucket: "bobble-13959.firebasestorage.app",
+          messagingSenderId: "164832587163",
+          appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        // Initialize Firebase Realtime Database
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Reference to the classes grid container
+        const classesGrid = document.querySelector('.classes-grid');
+
+        // Listen for classes data from Firebase Realtime Database
+        database.ref('classes').on('value', (snapshot) => {
+            // Clear the loading state
+            classesGrid.innerHTML = '';
+
+            const classesData = snapshot.val();
+
+            if (classesData) {
+                console.log('✓ Classes loaded successfully from Firebase:', classesData);
+
+                // Loop through each class and render dynamically
+                Object.entries(classesData).forEach(([id, classItem]) => {
+                    const classCard = document.createElement('div');
+                    classCard.className = 'class-card';
+
+                    classCard.innerHTML = `
+                        <h3>${classItem.name}</h3>
+                        <p><strong>Instructor:</strong> ${classItem.instructor}</p>
+                        <p><strong>Time:</strong> ${classItem.time}</p>
+                        <p><strong>Duration:</strong> ${classItem.duration}</p>
+                        <p><strong>Level:</strong> ${classItem.level}</p>
+                        <a href="individual_class_template.html?id=${id}" class="btn btn-primary">Explore Classes</a>
+                    `;
+
+                    classesGrid.appendChild(classCard);
+                });
+            } else {
+                console.log('⚠️ No classes found in database');
+                classesGrid.innerHTML = '<p>No classes available at the moment.</p>';
+            }
+        }, (error) => {
+            console.error('❌ Error loading classes:', error);
+            classesGrid.innerHTML = '<p>Error loading classes. Please try again later.</p>';
+        });
+    </script>
 </body>
 </html>
