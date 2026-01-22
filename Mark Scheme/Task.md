@@ -1,4 +1,4 @@
-# Instruction Manual: The Business Proposal
+# Instruction Manual: The Business Proposal.
 
 **Module:** DESE71013 - Innovation Management
 **Weighting:** 50% of Final Mark
