@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Classes - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase Realtime Database SDK -->
+    <!-- Firebase SDKs (Compatibility Versions) -->
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
 </head>
 <body>
@@ -39,30 +40,31 @@
         <div class="container">
             <h2>Available Classes</h2>
             
+            <!-- This grid will be populated dynamically -->
             <div class="classes-grid">
-                <div class="class-card">
-                    <p>Loading...</p>
+                <div class="loading-state" style="text-align: center; padding: 20px;">
+                    <p>⏳ Loading classes from database...</p>
                 </div>
             </div>
         </div>
     </section>
 
- <div id="footer-wrapper">
+    <div id="footer-wrapper">
         <footer id="footer" class="container">
             <div class="row">
                 <div class="col-3 col-6-medium col-12-small">
                     <section class="widget links">
                         <h3>Random Stuff</h3>
                         <ul class="style2">
-                            <li><a href="#">Etiam feugiat condimentum</a></li>
-                            <li><a href="#">Aliquam imperdiet suscipit odio</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
                         </ul>
                     </section>
                 </div>
                 <div class="col-3 col-6-medium col-12-small">
                     <section class="widget contact last">
                         <h3>Contact Us</h3>
-                        <p>1234 Fictional Road<br />London, UK<br />(800) 555-0000</p>
+                        <p>1234 London Road<br />London, UK<br />(800) 555-0000</p>
                     </section>
                 </div>
             </div>
@@ -77,59 +79,72 @@
             </div>
         </footer>
     </div>
+
     <script src="js/menu.js"></script>
     <script>
-        // Firebase Configuration (from js/auth.js)
+        // Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
           authDomain: "bobble-13959.firebaseapp.com",
+          databaseURL: "https://bobble-13959-default-rtdb.europe-west1.firebasedatabase.app/",
           projectId: "bobble-13959",
           storageBucket: "bobble-13959.firebasestorage.app",
           messagingSenderId: "164832587163",
           appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
         };
 
-        // Initialize Firebase Realtime Database
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        try {
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            const auth = firebase.auth();
+            const classesGrid = document.querySelector('.classes-grid');
 
-        // Reference to the classes grid container
-        const classesGrid = document.querySelector('.classes-grid');
+            console.log("DEBUG: 1. Firebase initialized.");
 
-        // Listen for classes data from Firebase Realtime Database
-        database.ref('classes').on('value', (snapshot) => {
-            // Clear the loading state
-            classesGrid.innerHTML = '';
+            // To resolve permission_denied, we ensure the user is authenticated (even anonymously)
+            // if your rules require 'auth != null'.
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    console.log("DEBUG: No user detected. Signing in anonymously to bypass security rules...");
+                    auth.signInAnonymously().catch(err => console.error("Anonymous Auth Failed:", err));
+                    return;
+                }
 
-            const classesData = snapshot.val();
+                console.log("DEBUG: Authenticated (UID: " + user.uid + "). Fetching classes...");
 
-            if (classesData) {
-                console.log('✓ Classes loaded successfully from Firebase:', classesData);
+                // Listen for classes data
+                database.ref('classes').on('value', (snapshot) => {
+                    const classesData = snapshot.val();
+                    classesGrid.innerHTML = '';
 
-                // Loop through each class and render dynamically
-                Object.entries(classesData).forEach(([id, classItem]) => {
-                    const classCard = document.createElement('div');
-                    classCard.className = 'class-card';
-
-                    classCard.innerHTML = `
-                        <h3>${classItem.name}</h3>
-                        <p><strong>Instructor:</strong> ${classItem.instructor}</p>
-                        <p><strong>Time:</strong> ${classItem.time}</p>
-                        <p><strong>Duration:</strong> ${classItem.duration}</p>
-                        <p><strong>Level:</strong> ${classItem.level}</p>
-                        <a href="individual_class_template.html?id=${id}" class="btn btn-primary">Explore Classes</a>
-                    `;
-
-                    classesGrid.appendChild(classCard);
+                    if (classesData) {
+                        Object.entries(classesData).forEach(([id, classItem]) => {
+                            const classCard = document.createElement('div');
+                            classCard.className = 'class-card';
+                            classCard.innerHTML = `
+                                <h3>${classItem.name || 'Untitled Class'}</h3>
+                                <p><strong>Instructor:</strong> ${classItem.instructor || 'TBD'}</p>
+                                <p><strong>Time:</strong> ${classItem.time || 'N/A'}</p>
+                                <p><strong>Duration:</strong> ${classItem.duration || 'N/A'}</p>
+                                <p><strong>Level:</strong> ${classItem.level || 'All Levels'}</p>
+                                <a href="individual_class_template.html?id=${id}" class="btn btn-primary">Explore Class</a>
+                            `;
+                            classesGrid.appendChild(classCard);
+                        });
+                        console.log('DEBUG: UI updated with database classes.');
+                    } else {
+                        classesGrid.innerHTML = '<p>No classes found in the database.</p>';
+                    }
+                }, (error) => {
+                    console.error('DEBUG ERROR: ❌ Database read failed.', error);
+                    classesGrid.innerHTML = '<p>Permission denied. Please ensure the "Anonymous" provider is enabled in the Firebase Console.</p>';
                 });
-            } else {
-                console.log('⚠️ No classes found in database');
-                classesGrid.innerHTML = '<p>No classes available at the moment.</p>';
-            }
-        }, (error) => {
-            console.error('❌ Error loading classes:', error);
-            classesGrid.innerHTML = '<p>Error loading classes. Please try again later.</p>';
-        });
+            });
+
+        } catch (initError) {
+            console.error('DEBUG ERROR: ❌ Firebase failed to load.', initError);
+        }
     </script>
 </body>
 </html>
