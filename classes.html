@@ -102,16 +102,22 @@
 
             console.log("DEBUG: 1. Firebase initialized.");
 
-            // To resolve permission_denied, we ensure the user is authenticated (even anonymously)
-            // if your rules require 'auth != null'.
+            // To resolve permission_denied, we ensure the user is authenticated.
             auth.onAuthStateChanged((user) => {
                 if (!user) {
-                    console.log("DEBUG: No user detected. Signing in anonymously to bypass security rules...");
-                    auth.signInAnonymously().catch(err => console.error("Anonymous Auth Failed:", err));
+                    console.log("DEBUG: 2. No user detected. Attempting anonymous sign-in...");
+                    auth.signInAnonymously().catch(err => {
+                        console.error("DEBUG ERROR: Anonymous Auth Failed. Make sure 'Anonymous' is enabled in Firebase Console > Auth > Sign-in method.", err);
+                        classesGrid.innerHTML = `
+                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
+                                <strong>Auth Error:</strong> Anonymous sign-in failed. <br><br>
+                                <strong>Fix:</strong> Go to Firebase Console -> Authentication -> Sign-in method -> Enable "Anonymous".
+                            </div>`;
+                    });
                     return;
                 }
 
-                console.log("DEBUG: Authenticated (UID: " + user.uid + "). Fetching classes...");
+                console.log("DEBUG: 3. Authenticated (UID: " + user.uid + "). Fetching classes...");
 
                 // Listen for classes data
                 database.ref('classes').on('value', (snapshot) => {
@@ -132,13 +138,18 @@
                             `;
                             classesGrid.appendChild(classCard);
                         });
-                        console.log('DEBUG: UI updated with database classes.');
+                        console.log('DEBUG: 4. UI updated with database classes.');
                     } else {
+                        console.warn('DEBUG: ⚠️ Database node "classes" is empty.');
                         classesGrid.innerHTML = '<p>No classes found in the database.</p>';
                     }
                 }, (error) => {
                     console.error('DEBUG ERROR: ❌ Database read failed.', error);
-                    classesGrid.innerHTML = '<p>Permission denied. Please ensure the "Anonymous" provider is enabled in the Firebase Console.</p>';
+                    classesGrid.innerHTML = `
+                        <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
+                            <strong>Permission Error:</strong> You do not have permission to read this data. <br><br>
+                            <strong>Fix:</strong> Check your Realtime Database "Rules" tab. Ensure ".read" is set to true or "auth != null".
+                        </div>`;
                 });
             });
 
