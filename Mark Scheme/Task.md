@@ -73,3 +73,9 @@ Report needs an introductory paper (think like an accademic paper) market were i
 
 Sophistication of argument is important in the report. Choose arguements that back the argument. Accessibility, sustainability, usability etc. Show value proposition.
 
+## Things to do:
+- Use litterature.
+- Website Design
+- Forecasting
+- Everything we have done need to write about!
+
