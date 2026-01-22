@@ -65,3 +65,11 @@ To achieve an **A**,submission must address:
 8. **Engaging Narrative:** The report must tell a convincing story.
 9. **Professionalism:** High-quality organization, visual appeal, and error-free writing.
 10. **Interactive Website:** User-centered design that drives engagement and action.
+
+
+# Notes:
+
+Report needs an introductory paper (think like an accademic paper) market were in and demand for product we are aligning in or product we are replacing.
+
+Sophistication of argument is important in the report. Choose arguements that back the argument. Accessibility, sustainability, usability etc. Show value proposition.
+
