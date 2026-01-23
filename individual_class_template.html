@@ -8,7 +8,7 @@
     <!-- Firebase SDKs (Compatibility Versions) -->
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
 <body>
     <nav class="navbar">
         <div class="container">
@@ -95,7 +95,7 @@
         try {
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
-            const database = firebase.database();
+            const db = firebase.firestore();
             const auth = firebase.auth();
 
             // Get class ID from URL
@@ -130,11 +130,10 @@
 
                 console.log("DEBUG: Authenticated. Fetching class data for ID:", classId);
 
-                // Fetch specific class data
-                database.ref('classes/' + classId).on('value', (snapshot) => {
-                    const classData = snapshot.val();
-
-                    if (classData) {
+                // Fetch specific class data from Firestore
+                db.collection('classes').doc(classId).get().then((doc) => {
+                    if (doc.exists) {
+                        const classData = doc.data();
                         console.log('DEBUG: Class data retrieved:', classData);
                         
                         classVenueHeading.textContent = classData.venue || 'Class Venue';
@@ -156,11 +155,12 @@
                                 <strong>Error:</strong> Class not found in the database.
                             </div>`;
                     }
-                }, (error) => {
-                    console.error('DEBUG ERROR: Database read failed.', error);
+                }).catch((error) => {
+                    console.error('DEBUG ERROR: Firestore read failed.', error);
                     classDetailsDiv.innerHTML = `
                         <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
-                            <strong>Permission Error:</strong> Unable to fetch class data.
+                            <strong>Permission Error:</strong> Unable to fetch class data. <br><br>
+                            <strong>Details:</strong> ${error.message}
                         </div>`;
                 });
             });
