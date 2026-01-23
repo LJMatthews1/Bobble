@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Classes - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDKs (Compatibility Versions) -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
 <body>
     <nav class="navbar">
         <div class="container">
@@ -33,19 +37,13 @@
 
     <section class="classes-section">
         <div class="container">
-            <h2>(Name of Place)</h2>
+            <h2 id="class-venue">Loading...</h2>
             
             <div class="classes-grid">
-                <div class="class-card">
-                    <h3>(Name of Class)</h3>
-                    <p><strong>Description:</strong> This place offers Yoga classes...</p>
-                    <p><strong>Time:</strong> (Add date/time?)</p>
-                    <p><strong>Duration:</strong> (___ minutes)</p>
-                    <p><strong>Level:</strong> (beginner, intermediate, advanced)</p>
-                    <p><strong>Location:</strong> (address)</p>
-                    <button class="btn btn-primary">Open in Google Maps</button>
-
-                    <img src="https://triyoga.co.uk/wp-content/uploads/2017/10/logo-on-wall-1024x643.jpg" alt="Triyoga Studio Logo" style="margin-left: 50px; margin-top: 20px;">
+                <div class="class-card" id="class-details">
+                    <div style="text-align: center; padding: 20px;">
+                        <p>⏳ Loading class details...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,5 +80,94 @@
         </footer>
     </div>
     <script src="js/menu.js"></script>
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+          authDomain: "bobble-13959.firebaseapp.com",
+          databaseURL: "https://bobble-13959-default-rtdb.europe-west1.firebasedatabase.app/",
+          projectId: "bobble-13959",
+          storageBucket: "bobble-13959.firebasestorage.app",
+          messagingSenderId: "164832587163",
+          appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        try {
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            const auth = firebase.auth();
+
+            // Get class ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const classId = urlParams.get('id');
+
+            const classDetailsDiv = document.getElementById('class-details');
+            const classVenueHeading = document.getElementById('class-venue');
+
+            if (!classId) {
+                classDetailsDiv.innerHTML = `
+                    <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
+                        <strong>Error:</strong> No class ID provided in the URL.
+                    </div>`;
+                return;
+            }
+
+            console.log("DEBUG: Class ID from URL:", classId);
+
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    console.log("DEBUG: No user detected. Attempting anonymous sign-in...");
+                    auth.signInAnonymously().catch(err => {
+                        console.error("DEBUG ERROR: Anonymous Auth Failed.", err);
+                        classDetailsDiv.innerHTML = `
+                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
+                                <strong>Auth Error:</strong> Anonymous sign-in failed.
+                            </div>`;
+                    });
+                    return;
+                }
+
+                console.log("DEBUG: Authenticated. Fetching class data for ID:", classId);
+
+                // Fetch specific class data
+                database.ref('classes/' + classId).on('value', (snapshot) => {
+                    const classData = snapshot.val();
+
+                    if (classData) {
+                        console.log('DEBUG: Class data retrieved:', classData);
+                        
+                        classVenueHeading.textContent = classData.venue || 'Class Venue';
+                        
+                        classDetailsDiv.innerHTML = `
+                            <h3>${classData.name || 'Untitled Class'}</h3>
+                            <p><strong>Instructor:</strong> ${classData.instructor || 'TBD'}</p>
+                            <p><strong>Description:</strong> ${classData.description || 'No description available'}</p>
+                            <p><strong>Time:</strong> ${classData.time || 'N/A'}</p>
+                            <p><strong>Duration:</strong> ${classData.duration || 'N/A'}</p>
+                            <p><strong>Level:</strong> ${classData.level || 'All Levels'}</p>
+                            <p><strong>Location:</strong> ${classData.location || 'Address not provided'}</p>
+                            ${classData.imageUrl ? `<img src="${classData.imageUrl}" alt="${classData.name}" style="margin-left: 50px; margin-top: 20px; max-width: 300px;">` : ''}
+                        `;
+                    } else {
+                        console.warn('DEBUG: No data found for class ID:', classId);
+                        classDetailsDiv.innerHTML = `
+                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
+                                <strong>Error:</strong> Class not found in the database.
+                            </div>`;
+                    }
+                }, (error) => {
+                    console.error('DEBUG ERROR: Database read failed.', error);
+                    classDetailsDiv.innerHTML = `
+                        <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
+                            <strong>Permission Error:</strong> Unable to fetch class data.
+                        </div>`;
+                });
+            });
+
+        } catch (initError) {
+            console.error('DEBUG ERROR: Firebase failed to load.', initError);
+        }
+    </script>
 </body>
 </html>
