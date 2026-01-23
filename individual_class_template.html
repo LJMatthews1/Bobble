@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Classes - Bobble</title>
+    <title>Class Details - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Firebase SDKs (Compatibility Versions) -->
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
+</head> <!-- Added missing head closing tag -->
 <body>
     <nav class="navbar">
         <div class="container">
@@ -37,51 +38,32 @@
 
     <section class="classes-section">
         <div class="container">
-            <h2 id="class-venue">Loading...</h2>
+            <!-- This will show the category or name as a heading -->
+            <h2 id="class-main-title">Loading Class...</h2>
             
-            <div class="classes-grid">
-                <div class="class-card" id="class-details">
+            <div class="classes-grid" style="display: block;"> <!-- Changed to block for a detail view -->
+                <div class="class-card" id="class-details" style="max-width: 800px; margin: 0 auto; text-align: left;">
                     <div style="text-align: center; padding: 20px;">
-                        <p>⏳ Loading class details...</p>
+                        <p>⏳ Fetching details from Bobble Database...</p>
                     </div>
                 </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="classes.html" class="btn">Back to All Classes</a>
             </div>
         </div>
     </section>
 
- <div id="footer-wrapper">
-        <footer id="footer" class="container">
-            <div class="row">
-                <div class="col-3 col-6-medium col-12-small">
-                    <section class="widget links">
-                        <h3>Random Stuff</h3>
-                        <ul class="style2">
-                            <li><a href="#">Etiam feugiat condimentum</a></li>
-                            <li><a href="#">Aliquam imperdiet suscipit odio</a></li>
-                        </ul>
-                    </section>
-                </div>
-                <div class="col-3 col-6-medium col-12-small">
-                    <section class="widget contact last">
-                        <h3>Contact Us</h3>
-                        <p>1234 Fictional Road<br />London, UK<br />(800) 555-0000</p>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div id="copyright">
-                        <ul class="menu">
-                            <li>&copy; Bobble 2024-2026. All rights reserved</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+    <footer id="footer" class="container">
+        <div id="copyright" style="text-align: center; padding: 20px;">
+            <p>&copy; Bobble 2024-2026. All rights reserved</p>
+        </div>
+    </footer>
+
     <script src="js/menu.js"></script>
     <script>
-        // Firebase Configuration
+        // Firebase Configuration (Must match classes.html)
         const firebaseConfig = {
           apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
           authDomain: "bobble-13959.firebaseapp.com",
@@ -93,94 +75,78 @@
         };
 
         try {
-            // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
             const database = firebase.database();
             const auth = firebase.auth();
 
-            // Get class ID from URL
+            // 1. Get ID from URL (e.g., ?id=class_001)
             const urlParams = new URLSearchParams(window.location.search);
             const classId = urlParams.get('id');
+            console.log("DEBUG: URL Class ID found:", classId);
 
             const classDetailsDiv = document.getElementById('class-details');
-            const classVenueHeading = document.getElementById('class-venue');
+            const mainTitle = document.getElementById('class-main-title');
 
             if (!classId) {
-                classDetailsDiv.innerHTML = `
-                    <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                        <strong>Error:</strong> No class ID provided in the URL.
-                    </div>`;
-                return;
+                console.error("DEBUG ERROR: No ID in URL. Did you click a link from classes.html?");
+                classDetailsDiv.innerHTML = `<p style="color:red;">Error: No class selected. Please go back to the classes page.</p>`;
+            } else {
+                // 2. Auth Check (needed if rules are auth != null)
+                auth.onAuthStateChanged((user) => {
+                    if (!user) {
+                        console.log("DEBUG: Signing in anonymously for detail view...");
+                        auth.signInAnonymously();
+                        return;
+                    }
+
+                    console.log("DEBUG: Connected as", user.uid, "- Fetching data for", classId);
+
+                    // 3. Fetch from Real-time Database
+                    // Path is 'classes/class_001'
+                    database.ref('classes/' + classId).on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        
+                        if (data) {
+                            console.log("DEBUG: Data received from Firebase:", data);
+                            
+                            // Update page Title
+                            mainTitle.textContent = data.name || "Class Details";
+
+                            // Update HTML content
+                            // Note: mapped to the fields in your JSON (name, instructor, time, level, description)
+                            classDetailsDiv.innerHTML = `
+                                <div style="padding: 20px;">
+                                    <h3 style="font-size: 2em; margin-bottom: 10px;">${data.name}</h3>
+                                    <p style="color: #e74c3c; font-weight: bold; margin-bottom: 20px;">${data.category || 'General'}</p>
+                                    
+                                    <p><strong>Instructor:</strong> ${data.instructor}</p>
+                                    <p><strong>When:</strong> ${data.time}</p>
+                                    <p><strong>Duration:</strong> ${data.duration}</p>
+                                    <p><strong>Difficulty:</strong> ${data.level}</p>
+                                    
+                                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                                    
+                                    <h4>About this class</h4>
+                                    <p style="line-height: 1.6;">${data.description || 'No description provided for this session.'}</p>
+                                    
+                                    <div style="margin-top: 30px;">
+                                        <button class="btn btn-primary" onclick="alert('Booking feature coming soon!')">Book with Credits</button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            console.warn("DEBUG ERROR: Path 'classes/" + classId + "' exists but has no data.");
+                            classDetailsDiv.innerHTML = `<p>Class not found in database. (ID: ${classId})</p>`;
+                        }
+                    }, (error) => {
+                        console.error("DEBUG ERROR: Database read failed:", error);
+                        classDetailsDiv.innerHTML = `<p>Error loading data: ${error.message}</p>`;
+                    });
+                });
             }
 
-            console.log("DEBUG: Class ID from URL:", classId);
-
-            auth.onAuthStateChanged((user) => {
-                if (!user) {
-                    console.log("DEBUG: No user detected. Attempting anonymous sign-in...");
-                    auth.signInAnonymously().catch(err => {
-                        console.error("DEBUG ERROR: Anonymous Auth Failed.", err);
-                        classDetailsDiv.innerHTML = `
-                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                                <strong>Auth Error:</strong> Anonymous sign-in failed.
-                            </div>`;
-                    });
-                    return;
-                }
-
-                console.log("DEBUG: Authenticated. Fetching class data for ID:", classId);
-
-                // Set a timeout to prevent infinite loading
-                const timeoutId = setTimeout(() => {
-                    console.error('DEBUG ERROR: Request timed out after 10 seconds');
-                    classDetailsDiv.innerHTML = `
-                        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                            <strong>Error:</strong> Request timed out. The database may not have permission to read individual class data.
-                        </div>`;
-                }, 10000);
-
-                // Fetch specific class data from Real-time Database
-                const ref = database.ref('classes/' + classId);
-                ref.on('value', (snapshot) => {
-                    clearTimeout(timeoutId);
-                    const classData = snapshot.val();
-
-                    if (classData) {
-                        console.log('DEBUG: Class data retrieved:', classData);
-                        
-                        classVenueHeading.textContent = classData.venue || 'Class Venue';
-                        
-                        classDetailsDiv.innerHTML = `
-                            <h3>${classData.name || 'Untitled Class'}</h3>
-                            <p><strong>Instructor:</strong> ${classData.instructor || 'TBD'}</p>
-                            <p><strong>Description:</strong> ${classData.description || 'No description available'}</p>
-                            <p><strong>Time:</strong> ${classData.time || 'N/A'}</p>
-                            <p><strong>Duration:</strong> ${classData.duration || 'N/A'}</p>
-                            <p><strong>Level:</strong> ${classData.level || 'All Levels'}</p>
-                            <p><strong>Location:</strong> ${classData.location || 'Address not provided'}</p>
-                            ${classData.imageUrl ? `<img src="${classData.imageUrl}" alt="${classData.name}" style="margin-left: 50px; margin-top: 20px; max-width: 300px;">` : ''}
-                        `;
-                    } else {
-                        console.warn('DEBUG: No data found for class ID:', classId);
-                        classDetailsDiv.innerHTML = `
-                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                                <strong>Error:</strong> Class not found in the database. Class ID: ${classId}
-                            </div>`;
-                    }
-                }, (error) => {
-                    clearTimeout(timeoutId);
-                    console.error('DEBUG ERROR: Real-time Database read failed.', error);
-                    classDetailsDiv.innerHTML = `
-                        <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
-                            <strong>Permission Error:</strong> Unable to fetch class data. <br><br>
-                            <strong>Details:</strong> ${error.message} <br><br>
-                            <strong>Fix:</strong> Check your Real-time Database "Rules" tab. Ensure anonymous users can read from the "classes" path.
-                        </div>`;
-                });
-            });
-
-        } catch (initError) {
-            console.error('DEBUG ERROR: Firebase failed to load.', initError);
+        } catch (err) {
+            console.error("DEBUG ERROR: Firebase Init failed:", err);
         }
     </script>
 </body>
