@@ -165,20 +165,21 @@ body {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #FFCF68 0%, #fbc246 100%);
+    color: rgb(0, 0, 0);
     padding: 100px 20px;
     text-align: center;
 }
 
 .hero-content h1 {
-    font-size: 2.5rem;
+    font-size: 4rem;
     margin-bottom: 1rem;
 }
 
 /* Bobble Title Animation */
 .bobble-title {
     position: relative;
+	font-size: 4rem;
     display: block; /* Keep as block for h1 semantics */
     text-align: center; /* Ensure the text is centered */
 }
@@ -198,7 +199,7 @@ body {
 }
 
 .bobble-centered {
-    font-size: 8rem;
+    font-size: 4rem;
     font-family: 'Chicle';
     font-weight: bold;
     color: white;
@@ -227,7 +228,7 @@ body {
 }
 
 .bobble-title.animate .bobble-word {
-    font-size: 2.5rem; /* End at normal size */
+    font-size: 4rem; /* End at normal size */
     position: static;
     top: auto;
     left: auto;
@@ -236,8 +237,9 @@ body {
 }
 
 .hero-content p {
-    font-size: 1.2rem;
+    font-size: 2rem;
     margin-bottom: 2rem;
+	font-weight: bold;
 }
 
 /* Buttons */
