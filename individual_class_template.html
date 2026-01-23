@@ -8,7 +8,7 @@
     <!-- Firebase SDKs (Compatibility Versions) -->
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
 <body>
     <nav class="navbar">
         <div class="container">
@@ -95,7 +95,7 @@
         try {
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
+            const database = firebase.database();
             const auth = firebase.auth();
 
             // Get class ID from URL
@@ -130,10 +130,22 @@
 
                 console.log("DEBUG: Authenticated. Fetching class data for ID:", classId);
 
-                // Fetch specific class data from Firestore
-                db.collection('classes').doc(classId).get().then((doc) => {
-                    if (doc.exists) {
-                        const classData = doc.data();
+                // Set a timeout to prevent infinite loading
+                const timeoutId = setTimeout(() => {
+                    console.error('DEBUG ERROR: Request timed out after 10 seconds');
+                    classDetailsDiv.innerHTML = `
+                        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
+                            <strong>Error:</strong> Request timed out. The database may not have permission to read individual class data.
+                        </div>`;
+                }, 10000);
+
+                // Fetch specific class data from Real-time Database
+                const ref = database.ref('classes/' + classId);
+                ref.on('value', (snapshot) => {
+                    clearTimeout(timeoutId);
+                    const classData = snapshot.val();
+
+                    if (classData) {
                         console.log('DEBUG: Class data retrieved:', classData);
                         
                         classVenueHeading.textContent = classData.venue || 'Class Venue';
@@ -152,15 +164,17 @@
                         console.warn('DEBUG: No data found for class ID:', classId);
                         classDetailsDiv.innerHTML = `
                             <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                                <strong>Error:</strong> Class not found in the database.
+                                <strong>Error:</strong> Class not found in the database. Class ID: ${classId}
                             </div>`;
                     }
-                }).catch((error) => {
-                    console.error('DEBUG ERROR: Firestore read failed.', error);
+                }, (error) => {
+                    clearTimeout(timeoutId);
+                    console.error('DEBUG ERROR: Real-time Database read failed.', error);
                     classDetailsDiv.innerHTML = `
                         <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
                             <strong>Permission Error:</strong> Unable to fetch class data. <br><br>
-                            <strong>Details:</strong> ${error.message}
+                            <strong>Details:</strong> ${error.message} <br><br>
+                            <strong>Fix:</strong> Check your Real-time Database "Rules" tab. Ensure anonymous users can read from the "classes" path.
                         </div>`;
                 });
             });
