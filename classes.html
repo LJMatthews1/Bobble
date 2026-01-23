@@ -119,7 +119,7 @@
 
                 console.log("DEBUG: 3. Authenticated (UID: " + user.uid + "). Fetching classes...");
 
-                // Listen for classes data
+                // Listen for classes data from Real-time Database
                 database.ref('classes').on('value', (snapshot) => {
                     const classesData = snapshot.val();
                     classesGrid.innerHTML = '';
@@ -148,7 +148,7 @@
                     classesGrid.innerHTML = `
                         <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
                             <strong>Permission Error:</strong> You do not have permission to read this data. <br><br>
-                            <strong>Fix:</strong> Check your Realtime Database "Rules" tab. Ensure ".read" is set to true or "auth != null".
+                            <strong>Fix:</strong> Check your Real-time Database "Rules" tab. Ensure ".read" is set to true or "auth != null".
                         </div>`;
                 });
             });
