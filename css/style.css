@@ -172,6 +172,80 @@ body {
     text-align: center;
 }
 
+/* Video Hero Section */
+.video-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.video-hero .hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.video-hero .hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.video-hero .hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.video-hero .btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+}
+
+.video-hero .btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .video-hero .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .video-hero .hero-content p {
+        font-size: 1rem;
+    }
+}
+
 .hero-content h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
