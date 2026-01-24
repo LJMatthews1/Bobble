@@ -1,8 +1,25 @@
 let slideIndex = 0;
-const slides = document.querySelectorAll('.slide');
-const dots = document.querySelectorAll('.dot');
 const slideText = document.getElementById('slide-text');
 const actionBtn = document.getElementById('action-btn');
+const plansLink = document.querySelector('.plans-link');
+
+// Get slides and initialize dots dynamically
+const slides = document.querySelectorAll('.slide');
+let dots = [];
+
+// Generate dots based on slide count
+function initializeDots() {
+    const dotsContainer = document.getElementById('dots-container');
+    dotsContainer.innerHTML = '';
+    slides.forEach((slide, index) => {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        if (index === 0) dot.classList.add('active');
+        dot.onclick = () => currentSlide(index);
+        dotsContainer.appendChild(dot);
+    });
+    dots = document.querySelectorAll('.dot');
+}
 
 function showSlide(index) {
     slides.forEach((slide, i) => {
@@ -11,7 +28,7 @@ function showSlide(index) {
     dots.forEach(dot => dot.classList.remove('active'));
     dots[index].classList.add('active');
     const activeSlide = slides[index];
-    slideText.textContent = activeSlide.dataset.text;
+    slideText.innerHTML = activeSlide.dataset.text;
     document.getElementById('about-header').textContent = activeSlide.dataset.header;
 
     // Update button based on slide
@@ -46,6 +63,11 @@ function showSlide(index) {
     } else {
         signupLink.classList.remove('hidden');
     }
+
+    // Show plans link only on last slide
+    if (plansLink) {
+        plansLink.style.display = index === slides.length - 1 ? 'inline-block' : 'none';
+    }
 }
 
 function changeSlide(n) {
@@ -60,4 +82,6 @@ function currentSlide(n) {
     showSlide(slideIndex);
 }
 
+// Initialize dots and show first slide on page load
+initializeDots();
 showSlide(slideIndex);
