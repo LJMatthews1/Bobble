@@ -164,31 +164,36 @@
                 // Ensure this matches your top-level node name in Firebase
                 database.ref('categories').on('value', (snapshot) => {
                     const categoriesData = snapshot.val();
-                    
-                    // Clear the "Loading..." message
                     classesGrid.innerHTML = '';
 
                     if (categoriesData) {
                         Object.entries(categoriesData).forEach(([id, categoryItem]) => {
                             const studioCount = categoryItem.studios ? Object.keys(categoryItem.studios).length : 0;
+            
+                            // 1. Get image from DB or use a placeholder
+                            const imageUrl = categoryItem.image_url || 'https://via.placeholder.com/400x250?text=Bobble+Fitness';
+            
                             const categoryCard = document.createElement('div');
                             categoryCard.className = 'class-card';
+            
+                            // 2. Add the Image div at the top
                             categoryCard.innerHTML = `
-                                <h3>${categoryItem.name || 'Untitled Category'}</h3>
-                                <p><strong>Description:</strong> ${categoryItem.description || 'No description available.'}</p>
-                                <p><strong>Studios:</strong> ${studioCount}</p>
-                                <a href="explore_category.html?category=${id}" class="btn btn-primary">Explore ${categoryItem.name}</a>
+                                <div class="category-image-wrapper">
+                                    <img src="${imageUrl}" alt="${categoryItem.name}" class="category-card-img">
+                                </div>
+                                <div class="category-card-body">
+                                    <h3>${categoryItem.name || 'Untitled Category'}</h3>
+                                    <p><strong>Description:</strong> ${categoryItem.description || 'No description available.'}</p>
+                                    <p><strong>Studios:</strong> ${studioCount}</p>
+                                    <a href="explore_category.html?category=${id}" class="btn btn-primary">Explore ${categoryItem.name}</a>
+                                </div>
                             `;
                             classesGrid.appendChild(categoryCard);
                         });
-                        console.log('DEBUG: UI successfully updated with data.');
+                        console.log('DEBUG: UI updated with images.');
                     } else {
-                        console.warn('DEBUG: Data received but it is empty/null.');
-                        classesGrid.innerHTML = '<p>No categories found in the database. Check your JSON import.</p>';
+                        classesGrid.innerHTML = '<p>No categories found.</p>';
                     }
-                }, (error) => {
-                    console.error('DEBUG: Database Read Error:', error);
-                    classesGrid.innerHTML = `<p>Error reading database: ${error.message}</p>`;
                 });
             });
 

@@ -1825,3 +1825,58 @@ ul.style2 {
     background-color: #7ACBFF;
     box-shadow: 0 6px 14px rgba(140,212,255,0.45);
 }
+
+/* 1. The Container for the card */
+.class-card {
+    border-radius: 20px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This centers everything inside the card */
+    padding-bottom: 25px; /* Space at the bottom of the card */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* 2. The Photo Wrapper - Now with 4 rounded corners */
+.category-image-wrapper {
+    width: 100%;         /* Spans the width of the inner card padding */
+    height: 250px;       
+    border-radius: 15px; /* This rounds all 4 corners */
+    overflow: hidden;    /* This "chops" the image into the rounded shape */
+    margin-bottom: 20px; 
+    position: relative;
+}
+
+.category-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* Keeps the photo from looking squished */
+    display: block;
+}
+
+/* 3. Centering the Title (Yoga) */
+.category-card-body h3 {
+    margin: 0 auto 15px; /* Centers it and adds space before description */
+    text-align: center;
+    font-size: 1.8rem;   /* Makes "Yoga" stand out more */
+    color: #7B61FF;      /* Based on your button color */
+}
+
+/* 4. Formatting the text area */
+.category-card-body {
+    width: 90%;          /* Keeps the text from hitting the very edge */
+    text-align: center;  /* Centers the description and studio count */
+}
+
+.category-card-body p {
+    margin-bottom: 10px;
+}
+
+/* 5. The Button */
+.btn-primary {
+    margin-top: 15px;
+    padding: 12px 30px;
+    border-radius: 8px;
+    display: inline-block;
+}
