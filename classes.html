@@ -121,8 +121,13 @@
     </div>
 
     <script src="js/menu.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
     <script>
-        // Firebase Configuration
+        // 2. CONFIGURATION
         const firebaseConfig = {
           apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
           authDomain: "bobble-13959.firebaseapp.com",
@@ -134,67 +139,61 @@
         };
 
         try {
-            // Initialize Firebase
+            // 3. INITIALIZATION
             firebase.initializeApp(firebaseConfig);
             const database = firebase.database();
             const auth = firebase.auth();
             const classesGrid = document.querySelector('.classes-grid');
 
-            console.log("DEBUG: 1. Firebase initialized.");
+            console.log("DEBUG: Firebase scripts loaded and initialized.");
 
-            // To resolve permission_denied, we ensure the user is authenticated.
+            // 4. AUTHENTICATION (Required if your DB rules are private)
             auth.onAuthStateChanged((user) => {
                 if (!user) {
-                    console.log("DEBUG: 2. No user detected. Attempting anonymous sign-in...");
+                    console.log("DEBUG: No user, signing in anonymously...");
                     auth.signInAnonymously().catch(err => {
-                        console.error("DEBUG ERROR: Anonymous Auth Failed. Make sure 'Anonymous' is enabled in Firebase Console > Auth > Sign-in method.", err);
-                        classesGrid.innerHTML = `
-                            <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; text-align: left;">
-                                <strong>Auth Error:</strong> Anonymous sign-in failed. <br><br>
-                                <strong>Fix:</strong> Go to Firebase Console -> Authentication -> Sign-in method -> Enable "Anonymous".
-                            </div>`;
+                        console.error("Auth Failed. Check if Anonymous Auth is enabled in Firebase Console.", err);
+                        classesGrid.innerHTML = '<p style="color:red;">Authentication Error. Please enable Anonymous login in Firebase.</p>';
                     });
                     return;
                 }
 
-                console.log("DEBUG: 3. Authenticated (UID: " + user.uid + "). Fetching classes...");
+                console.log("DEBUG: Authenticated. Fetching from 'categories'...");
 
-                // Listen for classes data from Real-time Database
-                database.ref('classes').on('value', (snapshot) => {
-                    const classesData = snapshot.val();
+                // 5. DATA FETCHING
+                // Ensure this matches your top-level node name in Firebase
+                database.ref('categories').on('value', (snapshot) => {
+                    const categoriesData = snapshot.val();
+                    
+                    // Clear the "Loading..." message
                     classesGrid.innerHTML = '';
 
-                    if (classesData) {
-                        Object.entries(classesData).forEach(([id, classItem]) => {
-                            const classCard = document.createElement('div');
-                            classCard.className = 'class-card';
-                            classCard.innerHTML = `
-                                <h3>${classItem.name || 'Untitled Class'}</h3>
-                                <p><strong>Description:</strong> ${classItem.description || 'TBD'}</p>
-                                <p><strong>Time:</strong> ${classItem.time || 'N/A'}</p>
-                                <p><strong>Duration:</strong> ${classItem.duration || 'N/A'}</p>
-                                <p><strong>Level:</strong> ${classItem.level || 'All Levels'}</p>
-                                <a href="individual_class_template.html?id=${id}" class="btn btn-primary">Explore Class</a>
+                    if (categoriesData) {
+                        Object.entries(categoriesData).forEach(([id, categoryItem]) => {
+                            const studioCount = categoryItem.studios ? Object.keys(categoryItem.studios).length : 0;
+                            const categoryCard = document.createElement('div');
+                            categoryCard.className = 'class-card';
+                            categoryCard.innerHTML = `
+                                <h3>${categoryItem.name || 'Untitled Category'}</h3>
+                                <p><strong>Description:</strong> ${categoryItem.description || 'No description available.'}</p>
+                                <p><strong>Studios:</strong> ${studioCount}</p>
+                                <a href="explore_category.html?category=${id}" class="btn btn-primary">Explore ${categoryItem.name}</a>
                             `;
-                            classesGrid.appendChild(classCard);
+                            classesGrid.appendChild(categoryCard);
                         });
-                        console.log('DEBUG: 4. UI updated with database classes.');
+                        console.log('DEBUG: UI successfully updated with data.');
                     } else {
-                        console.warn('DEBUG: ⚠️ Database node "classes" is empty.');
-                        classesGrid.innerHTML = '<p>No classes found in the database.</p>';
+                        console.warn('DEBUG: Data received but it is empty/null.');
+                        classesGrid.innerHTML = '<p>No categories found in the database. Check your JSON import.</p>';
                     }
                 }, (error) => {
-                    console.error('DEBUG ERROR: ❌ Database read failed.', error);
-                    classesGrid.innerHTML = `
-                        <div style="color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 4px; text-align: left;">
-                            <strong>Permission Error:</strong> You do not have permission to read this data. <br><br>
-                            <strong>Fix:</strong> Check your Real-time Database "Rules" tab. Ensure ".read" is set to true or "auth != null".
-                        </div>`;
+                    console.error('DEBUG: Database Read Error:', error);
+                    classesGrid.innerHTML = `<p>Error reading database: ${error.message}</p>`;
                 });
             });
 
         } catch (initError) {
-            console.error('DEBUG ERROR: ❌ Firebase failed to load.', initError);
+            console.error('DEBUG: Script crash:', initError);
         }
     </script>
 </body>
