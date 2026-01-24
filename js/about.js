@@ -12,6 +12,7 @@ function showSlide(index) {
     dots[index].classList.add('active');
     const activeSlide = slides[index];
     slideText.textContent = activeSlide.dataset.text;
+    document.getElementById('about-header').textContent = activeSlide.dataset.header;
 
     // Update button based on slide
     actionBtn.textContent = activeSlide.dataset.buttonText;
@@ -25,6 +26,26 @@ function showSlide(index) {
     // Disable nav buttons appropriately
     document.querySelector('.prev-btn').disabled = index === 0;
     document.querySelector('.next-btn').disabled = index === slides.length - 1;
+    
+    // Align arrows based on slide position
+    const navRow = document.querySelector('.nav-row');
+    navRow.classList.remove('nav-row-last', 'nav-row-middle', 'nav-row-first');
+    
+    if (index === 0) {
+        navRow.classList.add('nav-row-first');
+    } else if (index === slides.length - 1) {
+        navRow.classList.add('nav-row-last');
+    } else {
+        navRow.classList.add('nav-row-middle');
+    }
+    
+    // Hide signup link on last slide
+    const signupLink = document.querySelector('.signup-link');
+    if (index === slides.length - 1) {
+        signupLink.classList.add('hidden');
+    } else {
+        signupLink.classList.remove('hidden');
+    }
 }
 
 function changeSlide(n) {

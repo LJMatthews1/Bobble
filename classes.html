@@ -5,15 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Classes - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDKs (Compatibility Versions) -->
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-database-compat.js"></script>
+    
+    <script type="module">
+        // Import the specific functions needed from the CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // Your specific Firebase configuration for the Bobble project
+        const firebaseConfig = {
+            apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+            authDomain: "bobble-13959.firebaseapp.com",
+            projectId: "bobble-13959",
+            storageBucket: "bobble-13959.firebasestorage.app",
+            messagingSenderId: "164832587163",
+            appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        // Initialize Firebase
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            console.log("DEBUG: Firebase initialized successfully on classes.html");
+
+            // --- Navigation Logic ---
+            onAuthStateChanged(auth, (user) => {
+                const authLink = document.getElementById('auth-link');
+                if (user) {
+                    console.log("DEBUG: User detected (" + user.email + "). Updating nav to Logout.");
+                    authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
+                    
+                    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        try {
+                            console.log("DEBUG: Attempting logout...");
+                            await signOut(auth);
+                            window.location.reload();
+                        } catch (error) {
+                            console.error("DEBUG ERROR: Logout failed. Check internet connection.", error);
+                        }
+                    });
+                } else {
+                    console.log("DEBUG: No active session. Showing Login link.");
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            });
+
+        } catch (error) {
+            console.error("DEBUG ERROR: Firebase failed to load. Check if your apiKey is correct in classes.html.", error);
+        }
+    </script>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="logo"><a href="index.html">Bobble</a></div>
+            <div class="logo">Bobble</div>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
                 <span></span>
@@ -21,17 +66,11 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                 <li class="dropdown">
-                    <a href="classes.html" class="dropbtn">Classes</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="classes.html">All Classes</a></li>
-                        <li><a href="classes.html">Arts &amp; Crafts</a></li>
-                        <li><a href="classes.html">Sports</a></li>
-                    </ul>
-                </li>
+                <li><a href="classes.html">Classes</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="account.html">Account</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li><a href="meet_the_founders.html">Meet the Founders</a></li>
+                <li id="auth-link"><a href="login.html">Login</a></li>
             </ul>
         </div>
     </nav>

@@ -3,13 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - FitHub</title>
+    <title>About Us - Bobble</title>
     <link rel="stylesheet" href="css/style.css">
+    
+    <script type="module">
+        // Import the specific functions needed from the CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // Your specific Firebase configuration for the Bobble project
+        const firebaseConfig = {
+            apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+            authDomain: "bobble-13959.firebaseapp.com",
+            projectId: "bobble-13959",
+            storageBucket: "bobble-13959.firebasestorage.app",
+            messagingSenderId: "164832587163",
+            appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        // Initialize Firebase
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            console.log("DEBUG: Firebase initialized successfully on about.html");
+
+            // --- Navigation Logic ---
+            onAuthStateChanged(auth, (user) => {
+                const authLink = document.getElementById('auth-link');
+                if (user) {
+                    console.log("DEBUG: User detected (" + user.email + "). Updating nav to Logout.");
+                    authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
+                    
+                    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        try {
+                            console.log("DEBUG: Attempting logout...");
+                            await signOut(auth);
+                            window.location.reload();
+                        } catch (error) {
+                            console.error("DEBUG ERROR: Logout failed. Check internet connection.", error);
+                        }
+                    });
+                } else {
+                    console.log("DEBUG: No active session. Showing Login link.");
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            });
+
+        } catch (error) {
+            console.error("DEBUG ERROR: Firebase failed to load. Check if your apiKey is correct in about.html.", error);
+        }
+    </script>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="logo"><a href="index.html">Bobble</a></div>
+            <div class="logo">Bobble</div>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
                 <span></span>
@@ -17,46 +66,40 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                 <li class="dropdown">
-                    <a href="classes.html" class="dropbtn">Classes</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="classes.html">All Classes</a></li>
-                        <li><a href="classes.html">Arts &amp; Crafts</a></li>
-                        <li><a href="classes.html">Sports</a></li>
-                    </ul>
-                </li>
+                <li><a href="classes.html">Classes</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="account.html">Account</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li><a href="meet_the_founders.html">Meet the Founders</a></li>
+                <li id="auth-link"><a href="login.html">Login</a></li>
             </ul>
         </div>
     </nav>
 
     <section class="about-section">
-        <div class="container">
-            <h2>About Bobble</h2>
-            <div class="slider-container">
-                <div class="slider">
-                    <img class="slide active" src="images/red.jpg" data-text="Bobble is a subscription service that gives you access to hundreds of classses and activities across London. Where you can go with your friends or make new ones!" data-button-text="Continue" data-button-href="#" alt="Image 1" style="transform: translateX(0%)">
-                    <img class="slide" src="images/blue.jpg" data-text="There is an array of plans to suit your hobby needs. These plans give you credits to freely book classes. Different classes will have different credit costs depending on class type and booking time." data-button-text="Continue" data-button-href="#" alt="Image 2" style="transform: translateX(100%)">
-                    <img class="slide" src="images/Green.png" data-text="Bobble makes it affordable and easy to find and book classes" data-button-text="Get Started" data-button-href="signup.html" alt="Image 3" style="transform: translateX(200%)">
-                </div>
-                <div class="text-box">
+        <div class="slider-container">
+            <div class="slider">
+                <img class="slide active" src="images/Painting.jpeg" data-header="About Bobble" data-text="Bobble is a subscription service that gives you access to hundreds of classses and activities across London. Where you can go with your friends or make new ones!" data-button-text="Continue" data-button-href="#" alt="Image 1" style="transform: translateX(0%)">
+                <img class="slide" src="images/Climbing.jpeg" data-header="Our Plans" data-text="There is an array of plans to suit your hobby needs. These plans give you credits to freely book classes. Different classes will have different credit costs depending on class type and booking time." data-button-text="Continue" data-button-href="#" alt="Image 2" style="transform: translateX(100%)">
+                <img class="slide" src="images/Pottery.jpeg" data-header="Get Started" data-text="Bobble makes it affordable and easy to find and book classes" data-button-text="Get Started" data-button-href="signup.html" alt="Image 3" style="transform: translateX(200%)">
+            </div>
+            <div class="text-box">
+                <div class="text-wrapper">
+                    <h1 class="about-header" id="about-header">About Bobble</h1>
                     <div class="text-content">
                         <p id="slide-text"></p>
-                        <div class="nav-row">
-                            <button class="nav-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button> <!-- unicode for arrow symbol -->
-                            <button class="nav-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
-                        </div>
-                        <div class="dots">
-                            <span class="dot active" onclick="currentSlide(0)"></span>
-                            <span class="dot" onclick="currentSlide(1)"></span>
-                            <span class="dot" onclick="currentSlide(2)"></span>
-                        </div>
                     </div>
-                    <a href="#" class="btn btn-primary" id="action-btn">Continue</a>
-                    <a href="signup.html" class="signup-link">Sign Up</a>
                 </div>
+                <div class="nav-row">
+                    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button> <!-- unicode for arrow symbol -->
+                    <button class="nav-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+                </div>
+                <div class="dots">
+                    <span class="dot active" onclick="currentSlide(0)"></span>
+                    <span class="dot" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                </div>
+                <a href="#" class="btn btn-primary" id="action-btn">Continue</a>
+                <a href="signup.html" class="signup-link">Sign Up</a>
             </div>
         </div>
     </section>
