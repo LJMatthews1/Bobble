@@ -965,14 +965,21 @@ body {
         font-size: 1.5rem;
         height: auto;
         min-height: 100vh;
-        justify-content: flex-start;
-        padding-top: 8rem;
+        justify-content: center;
+        align-items: center;
+        padding-top: 0;
+        display: flex;
+        flex-direction: column;
     }
     .text-wrapper {
         max-width: 500px;
+        text-align: center;
     }
     .about-header {
         font-size: 2.5rem;
+    }
+    .nav-btn {
+        display: none;
     }
     .prev, .next {
         padding: 8px;
@@ -1616,6 +1623,16 @@ ul.style2 {
     color: white;
     text-align: center;
     position: relative;
+    animation: scrollHold 0.5s ease-out forwards;
+}
+
+@keyframes scrollHold {
+    0% {
+        background-position: center;
+    }
+    100% {
+        background-position: center;
+    }
 }
 
 .founders-hero::before {
