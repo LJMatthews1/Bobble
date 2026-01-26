@@ -10,6 +10,39 @@
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCm470tvi--eWD1LXpzgJpaZoVCM3XPB14",
+            authDomain: "bobble-13959.firebaseapp.com",
+            projectId: "bobble-13959",
+            storageBucket: "bobble-13959.firebasestorage.app",
+            messagingSenderId: "164832587163",
+            appId: "1:164832587163:web:8ed8f747bac4b5f95cc53e"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            onAuthStateChanged(auth, (user) => {
+                const authLink = document.getElementById('auth-link');
+                if (user) {
+                    authLink.innerHTML = '<a href="#" id="logout-btn">Logout</a>';
+                    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        await signOut(auth);
+                        window.location.reload();
+                    });
+                } else {
+                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                }
+            });
+        } catch (error) {
+            console.error("Firebase init failed on account.html", error);
+        }
+    </script>
     <style>
         .credits-card {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
@@ -136,6 +169,7 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="plans.html">Plans</a></li>
                 <li><a href="account.html">Account</a></li>
+                <li><a href="meet_the_founders.html">Meet the Founders</a></li>
                 <li id="auth-link"><a href="login.html">Login</a></li>
             </ul>
         </div>
@@ -191,9 +225,36 @@
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 Bobble. All rights reserved.</p>
-    </footer>
+    <div id="footer-wrapper">
+        <footer id="footer" class="container">
+            <div class="row">
+                <div class="col-3 col-6-medium col-12-small">
+                    <section class="widget links">
+                        <h3>Random Stuff</h3>
+                        <ul class="style2">
+                            <li><a href="#">Terms &amp; Conditions</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul>
+                    </section>
+                </div>
+                <div class="col-3 col-6-medium col-12-small">
+                    <section class="widget contact last">
+                        <h3>Contact Us</h3>
+                        <p>1234 London Road<br />London, UK<br />(800) 555-0000</p>
+                    </section>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div id="copyright">
+                        <ul class="menu">
+                            <li>&copy; Bobble 2024-2026. All rights reserved</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script src="js/menu.js"></script>
     <script src="js/auth.js"></script>

@@ -727,12 +727,15 @@ body {
 /* Account Section */
 .account-section {
     padding: var(--section-padding);
+    background: linear-gradient(135deg, #FFDD8B 0%, #FFD066 100%);
+    min-height: 100vh;
 }
 
 .account-section h2 {
     text-align: center;
     margin-bottom: 3rem;
-    font-size: 2rem;
+    font-size: 2.5rem;
+    color: #333;
 }
 
 .account-grid {
