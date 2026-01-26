@@ -1878,7 +1878,7 @@ ul.style2 {
     background: #fff;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     padding-bottom: var(--spacing-lg);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     overflow: hidden;
@@ -1911,8 +1911,12 @@ ul.style2 {
 
 /* 4. Formatting the text area */
 .category-card-body {
-    width: 90%;          /* Keeps the text from hitting the very edge */
+    width: 100%;         /* Full width for proper card layout */
+    padding: 0 var(--spacing-lg);
     text-align: center;  /* Centers the description and studio count */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .category-card-body p {
@@ -1924,5 +1928,7 @@ ul.style2 {
     margin-top: var(--spacing-md);
     padding: var(--spacing-xs) var(--spacing-lg);
     border-radius: var(--radius-md);
-    display: inline-block;
+    display: block;
+    width: 100%;
+    text-align: center;
 }
