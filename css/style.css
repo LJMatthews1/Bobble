@@ -1660,78 +1660,54 @@ ul.style2 {
 }
 /* Meet the Founders Page */
 .founders-hero {
-    background-color: #4a4a4a;
+    display: none;
+}
+
+.founders-section {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    height: 100vh;
+    padding: 6rem 0;
+    min-height: 100vh;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    text-align: center;
     position: relative;
-    animation: scrollHold 0.5s ease-out forwards;
 }
 
-@keyframes scrollHold {
-    0% {
-        background-position: center;
-    }
-    100% {
-        background-position: center;
-    }
-}
-
-.founders-hero::before {
+.founders-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-}
-
-.hero-content h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-}
-
-.hero-content p {
-    font-size: 1.5rem;
-}
-
-.founders-section {
-    background: linear-gradient(to bottom, #f4f4f4 0%, #ffffff 100%);
-    padding: 4rem 0;
-    min-height: 100vh;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 0;
 }
 
 .founders-container {
     max-width: 95vw;
     width: 95%;
     margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: 3rem var(--spacing-lg);
     border-radius: var(--radius-lg);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .founders-container h2 {
     text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
     color: white;
+    max-width: 90%;
 }
 
 .founders-grid {
