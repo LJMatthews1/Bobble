@@ -987,6 +987,10 @@ body {
 
 #action-btn {
     margin-top: var(--spacing-lg);
+    padding: var(--spacing-xs) var(--spacing-lg);
+    white-space: nowrap;
+    display: inline-block;
+    width: auto !important;
 }
 
 .signup-link {

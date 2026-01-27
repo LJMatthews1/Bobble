@@ -7,6 +7,33 @@ const plansLink = document.querySelector('.plans-link');
 const slides = document.querySelectorAll('.slide');
 let dots = [];
 
+// Touch/swipe support for mobile
+let touchStartX = 0;
+let touchEndX = 0;
+
+function handleSwipe() {
+    if (touchEndX < touchStartX - 50) {
+        // Swiped left - go to next slide
+        changeSlide(1);
+    }
+    if (touchEndX > touchStartX + 50) {
+        // Swiped right - go to previous slide
+        changeSlide(-1);
+    }
+}
+
+const sliderContainer = document.querySelector('.slider-container');
+if (sliderContainer) {
+    sliderContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+    
+    sliderContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+}
+
 // Generate dots based on slide count
 function initializeDots() {
     const dotsContainer = document.getElementById('dots-container');
@@ -36,8 +63,15 @@ function showSlide(index) {
     actionBtn.href = activeSlide.dataset.buttonHref;
     if (index === slides.length - 1) {
         actionBtn.className = 'btn btn-final';
+        // Remove click handler for last slide (it's a link to signup)
+        actionBtn.onclick = null;
     } else {
         actionBtn.className = 'btn btn-primary';
+        // Add click handler to move to next slide
+        actionBtn.onclick = (e) => {
+            e.preventDefault();
+            changeSlide(1);
+        };
     }
 
     // Disable nav buttons appropriately
