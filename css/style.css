@@ -1866,14 +1866,9 @@ ul.style2 {
 
 /* 1. The Container for the card */
 .class-card {
-    border-radius: var(--radius-xl);
-    background: #fff;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    padding-bottom: var(--spacing-lg);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow: hidden;
+    height: 100%; /* Important: all cards in a row must be equal height */
 }
 
 /* 2. The Photo Wrapper - Now with 4 rounded corners */
@@ -1893,34 +1888,32 @@ ul.style2 {
     display: block;
 }
 
-/* 3. Centering the Title (Yoga) */
-.category-card-body h3 {
-    margin: 0 auto var(--spacing-md);
+/* 3. Centering the Title */
+.category-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* Centers the Title, Description, and Studios horizontally */
     text-align: center;
-    font-size: 1.8rem;
-    color: #7B61FF;
 }
 
 /* 4. Formatting the text area */
-.category-card-body {
-    width: 100%;         /* Full width for proper card layout */
-    padding: 0 var(--spacing-lg);
-    text-align: center;  /* Centers the description and studio count */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.category-card-body p:nth-of-type(1) {
+    flex-grow: 1;    /* This pushes everything below it (Studios & Button) down */
+    margin-bottom: 10px;
+    text-align: center;
 }
 
-.category-card-body p {
-    margin-bottom: 10px;
+.category-card-body p:nth-of-type(2) {
+    margin-top: auto;      /* Pushes it to the bottom */
+    margin-bottom: 15px;   /* Space between Studios and Button */
+    text-align: center;    /* Centers the text inside the paragraph */
+    width: 100%;           /* Ensures the paragraph takes up the full width to allow centering */
+    font-weight: bold;     /* Makes it stand out */
+    display: block;        /* Ensures it behaves like a block for centering */
 }
 
 /* 5. The Button */
 .btn-primary {
-    margin-top: var(--spacing-md);
-    padding: var(--spacing-xs) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    display: block;
-    width: 100%;
-    text-align: center;
+    align-self: center;
+    margin-top: 5px; /* Adds a tiny bit of breathing room from the Studios line */
 }
