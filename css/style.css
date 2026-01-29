@@ -539,6 +539,26 @@ body {
     transform: translateY(-2px);
 }
 
+/* Subtle, non-flashing hover for class-card buttons.
+   Keeps text white and avoids abrupt background/color swaps. */
+.class-card .btn-primary,
+.category-card-body .btn-primary,
+.classes-grid .btn-primary {
+    transition: box-shadow 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+    color: #ffffff; /* ensure white text */
+}
+.class-card .btn-primary:hover,
+.category-card-body .btn-primary:hover,
+.classes-grid .btn-primary:hover {
+    /* Don't replace the background — gently brighten instead to avoid flashing */
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px rgba(165,165,232,0.45);
+    transform: translateY(-2px);
+    /* Keep text color unchanged to avoid any jarring contrast */
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.35);
+}
+
 .btn-final:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(255,255,255,0.6), 0 4px 12px rgba(141, 139, 255, 0.35);
@@ -1916,4 +1936,12 @@ ul.style2 {
 .btn-primary {
     align-self: center;
     margin-top: 5px; /* Adds a tiny bit of breathing room from the Studios line */
+}
+
+/* Button hover effect for classes.html */
+.button {
+    transition: background-color 0.3s ease;
+}
+.button:hover {
+    background-color: #f0f0f0; /* Change to desired hover color */
 }
