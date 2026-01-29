@@ -152,6 +152,37 @@
         </div>
     </section>
 
+    <script>
+        // Auto-scroll to founders grid on page load with custom slow scroll
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const target = document.getElementById('founders-grid');
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset + 200; // Offset of 200px
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                const duration = 2000; // 2 seconds for smooth slow scroll
+                let start = null;
+
+                function animation(currentTime) {
+                    if (start === null) start = currentTime;
+                    const timeElapsed = currentTime - start;
+                    const run = ease(timeElapsed, startPosition, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                function ease(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }, 500);
+        });
+    </script>
+
     <div id="footer-wrapper">
         <footer id="footer" class="container">
             <div class="row">
