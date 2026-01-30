@@ -36,7 +36,7 @@
                         window.location.reload();
                     });
                 } else {
-                    authLink.innerHTML = '<a href="login.html">Login</a>';
+                    authLink.innerHTML = '<a href="/login.html">Login</a>';
                 }
             });
         } catch (error) {
@@ -168,7 +168,7 @@
                 <li><a href="plans.html">Plans</a></li>
                 <li><a href="account.html">Account</a></li>
                 <li><a href="meet_the_founders.html">Founders</a></li>
-                <li id="auth-link"><a href="login.html">Login</a></li>
+                <li id="auth-link"><a href="/login.html">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -316,7 +316,7 @@
                 errorDiv.style.display = 'block';
                 errorDiv.textContent = "You must be logged in to view this page. Redirecting to login...";
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login.html';
                 }, 2000);
             }
         });
